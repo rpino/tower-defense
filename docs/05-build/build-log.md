@@ -3,6 +3,7 @@
 | Date | Task | Branch / PR | ACs covered | Tests added | Reviewed by | Notes |
 |---|---|---|---|---|---|---|
 | 2026-10-04 | T-1 | `feature/T-1-scaffold` (no remote; no PR) | NFR-4, NFR-5, AC-10.4 (page CSS) | `tests/smoke.test.ts` | — | See T-1 notes |
+| 2026-10-04 | T-2 | `feature/T-2-map` | AC-2.1, AC-2.3, AC-10.2 (spacing), DES-1 | `tests/map.test.ts` | — | See T-2 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -11,3 +12,12 @@
 - **Manual check:** the dev server serves `index.html`, `/src/main.ts` and `/assets/landscape_sheet.xml` (200). `npm run dev` uses `--host`, so the iPhone can reach it over LAN.
 - **Finding for T-9:** the `zzfx` package runs `new AudioContext` **when it is imported**. That would create a second context before the first tap (against ADR-003 and AC-9.4) and crash Vitest under Node. T-9 will vendor only ZzFX's `buildSamples` (MIT, with attribution) into `src/audio/` and drop the package import. This stays within ADR-003 (ZzFX for sound effects, pre-rendered buffers).
 - **Assets:** copied `landscape_sheet`, `towers_grey_sheet` and `towers_red_sheet` (PNG + XML) and the Kenney licence into `public/assets/`.
+
+## T-2 notes
+- **Spike approach:** I picked frames using offline contact sheets of the atlases (Python/PIL) and a static mock render, not an in-game `?atlas=1` scene. That was faster, and nothing temporary has to be removed from the game later (T-16).
+- **Path pieces** (by open sides; NW = c−1, SE = c+1, NE = r−1, SW = r+1): `landscape_32` straight along c, `landscape_29` straight along r, corners `31` (SE+SW), `39` (NW+NE), `34` (NE+SE), `35` (NW+SW). Grass: `landscape_13`.
+- **Towers:** Archer = grey `tower_07` + `tower_01` + `tower_41` (green spire); Cannon = red `tower_50` + `tower_44` + `tower_24` (battlement; the barrel is drawn in code later). Piece rises are 30 px and 33 px; the base sits 45 px below the tile's top-face centre.
+- **Bottom anchor** `top = y + 66 − h` checked on 99, 115 and 130 px frames in the mock. Scenery frames are full tiles that include grass.
+- **Map:** 23-tile path (entry at the top-left edge, exit at the bottom); 10 spots; every spot pair is ≥ 2 tiles apart, and no spot pair is a same-sign knight move (those are only 119 world px apart).
+- **Build-spot look (AC-2.3):** uses grass plus a code-drawn pulsing diamond outline. No distinct Kenney tile read clearly enough against grass or path; the outline alone is clear (see mock).
+- **Mock:** ![T-2 map mock](img/T-2-map-mock.png)
