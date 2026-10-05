@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { cssSize, useCssCamera } from '../render/dpr';
 import { COLORS } from '../render/palette';
 import { button, text } from '../render/ui';
 
@@ -22,7 +23,8 @@ export class TitleScene extends Phaser.Scene {
   /** (Re)builds the screen for the current size (AC-10.3). */
   private build(): void {
     this.children.removeAll(true);
-    const { width, height } = this.scale;
+    useCssCamera(this.cameras.main);
+    const { width, height } = cssSize(this.scale);
     const panelW = Math.min(width - 32, 460);
     const titleSize = Math.min(48, panelW / 8);
 

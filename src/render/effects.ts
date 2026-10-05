@@ -1,6 +1,7 @@
 // Short visual effects in world space (AC-4.2 explosion, AC-5.4 death puff).
 import Phaser from 'phaser';
 import { groundEllipse } from '../sim/iso';
+import { DPR } from './dpr';
 import { COLORS, hex } from './palette';
 import { FONT } from './ui';
 
@@ -32,7 +33,7 @@ export function explosion(scene: Phaser.Scene, x: number, y: number, radiusTiles
 
 /** AC-5.5: "+N" gold rising from a kill for about 1 s; sized to stay readable at any zoom. */
 export function floatingText(scene: Phaser.Scene, x: number, y: number, label: string): void {
-  const zoom = scene.cameras.main.zoom || 1;
+  const zoom = (scene.cameras.main.zoom || 1) / DPR; // CSS px per world px
   const t = scene.add
     .text(x, y - 40, label, {
       fontFamily: FONT,

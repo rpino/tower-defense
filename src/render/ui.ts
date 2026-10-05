@@ -1,5 +1,6 @@
 // Small UI helpers for screen-space scenes (AC-10.1, AC-10.2, NFR-7).
 import Phaser from 'phaser';
+import { DPR } from './dpr';
 import { COLORS, hex } from './palette';
 
 export const FONT = '"Trebuchet MS", "Segoe UI", system-ui, -apple-system, sans-serif';
@@ -20,6 +21,7 @@ export function text(
       fontStyle: bold ? 'bold' : 'normal',
       color: hex(color),
       align: 'center',
+      resolution: DPR, // sharp text when the camera scales it up
     })
     .setOrigin(0.5);
 }

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { TowerType } from '../config/balance';
 import { SPOTS } from '../config/map';
 import { TOWERS } from '../config/balance';
+import { DPR, cssSize } from '../render/dpr';
 import { drawRangeCircles } from '../render/effects';
 import { createEnemyTextures } from '../render/enemies';
 import { EntityView } from '../render/entities';
@@ -58,7 +59,7 @@ export class GameScene extends Phaser.Scene {
       const spot = SPOTS.find((s) => s.id === spotId);
       if (!spot) return;
       const w = gridToWorld(spot.c, spot.r);
-      drawRangeCircles(this.rangeCircles, { archer: TOWERS.archer.range, cannon: TOWERS.cannon.range }, this.cameras.main.zoom);
+      drawRangeCircles(this.rangeCircles, { archer: TOWERS.archer.range, cannon: TOWERS.cannon.range }, this.layout.zoom);
       this.rangeCircles.setPosition(w.x, w.y).setVisible(true);
     });
     this.game.events.on(EV.pickerClose, () => this.rangeCircles.setVisible(false));
@@ -107,7 +108,7 @@ export class GameScene extends Phaser.Scene {
   private onPointerUp(pointer: Phaser.Input.Pointer): void {
     // Design §3.5: taps on the HUD, picker or result screen belong to UIScene.
     const ui = this.scene.get('UI') as { isOverUi?: (x: number, y: number) => boolean } | null;
-    if (this.scene.isActive('UI') && ui?.isOverUi?.(pointer.x, pointer.y)) return;
+    if (this.scene.isActive('UI') && ui?.isOverUi?.(pointer.x / DPR, pointer.y / DPR)) return;
     if (!this.state || this.state.phase === 'victory' || this.state.phase === 'defeat') return;
     // The press that hit Start/Restart must not also act on the map underneath.
     if (pointer.downTime < this.runStartedAt) return;
@@ -118,11 +119,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private applyLayout(): void {
-    const { width, height } = this.scale;
+    const { width, height } = cssSize(this.scale);
     this.layout = computeLayout(width, height);
     const cam = this.cameras.main;
-    cam.setSize(width, height);
-    cam.setZoom(this.layout.zoom);
+    cam.setSize(this.scale.width, this.scale.height);
+    cam.setZoom(this.layout.zoom * DPR); // layout is in CSS px; the canvas is DPR× larger
     cam.centerOn(this.layout.cameraCenter.x, this.layout.cameraCenter.y);
   }
 }

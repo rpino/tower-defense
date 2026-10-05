@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { cssSize, useCssCamera } from '../render/dpr';
 import { COLORS } from '../render/palette';
 import { text } from '../render/ui';
 
@@ -13,7 +14,8 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload(): void {
-    const { width, height } = this.scale;
+    useCssCamera(this.cameras.main);
+    const { width, height } = cssSize(this.scale);
     const barW = Math.min(320, width * 0.7);
     const frame = this.add.graphics();
     frame.lineStyle(3, COLORS.text, 0.9);
@@ -43,7 +45,7 @@ export class BootScene extends Phaser.Scene {
     if (this.failed || missing.length > 0) {
       if (missing.length > 0) console.error(`Missing textures: ${missing.join(', ')}`);
       this.children.removeAll(true);
-      const { width, height } = this.scale;
+      const { width, height } = cssSize(this.scale);
       text(this, width / 2, height / 2, 'Couldn’t load the game —\nplease refresh', 22);
       return;
     }

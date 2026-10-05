@@ -16,6 +16,7 @@
 | 2026-10-04 | T-12 | `feature/T-12-device-pass` | NFR-1, 3, 7, 8; AC-2.2, 10.1–10.5 (real devices) | `tests/debug.test.ts` + device checklist | Pino (playtest) | Passed: "all looked good" |
 | 2026-10-04 | T-13 | `feature/T-13-mute` | AC-9.5 (AC-5.2 Brute and AC-9.6 done earlier in T-7/T-9) | `tests/mute.test.ts` | — | See T-13 notes |
 | 2026-10-04 | T-14 | `feature/T-14-polish` | AC-3.10, AC-5.5, AC-5.7 | `tests/polish.test.ts` | — | See T-14 notes |
+| 2026-10-04 | T-15 | `feature/T-15-hidpi` | Design §3.5 (sharpness); AC-10.3 re-verified | `tests/dpr.test.ts` | — | See T-15 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -220,3 +221,19 @@
   - "+7" floats from an injected Runner death: pass.
   - Lives counter and heart flash on an injected leak: pass.
 - The browser automation again showed stale frames until frames were forced. Effects were checked by inspecting objects and forcing frames.
+
+## T-15 notes — high-DPI rendering (time box 45 min: ~21:59 → ~22:22, within the box; kept)
+- `src/render/dpr.ts`: `DPR = min(devicePixelRatio, 2)`; `?dpr=1|2` overrides it for testing (tested).
+- **Phaser** now uses `Scale.NONE` with the canvas at CSS size × DPR and `zoom: 1/DPR`, so the canvas is drawn at full resolution and shown at CSS size. Window `resize` and `visualViewport` resize call `game.scale.resize(...)`, which replaces what `Scale.RESIZE` did (AC-10.3).
+- **Layout stays in CSS px** (`computeLayout` is unchanged):
+  - Screen-space scenes (Boot, Title, UI) use a camera with origin (0, 0) and zoom = DPR.
+  - `GameScene`'s camera zoom = layout zoom × DPR.
+  - `GameScene` divides pointer coordinates by DPR before asking `UIScene.isOverUi`.
+  - Text uses `resolution: DPR`. Floating gold and range-circle widths use the CSS zoom.
+- **Manual check (Chrome):**
+  - `?dpr=2`: canvas 3072×1710 shown at 1536×855; title, HUD, picker and range circles are identical in layout. A tap at the CSS position of s5 opens its picker; choosing Archer builds it (gold 150 → 100).
+  - Resizing to 390×844 → canvas 780×1688, layout 390×844, run kept.
+  - 1×: canvas equals CSS size; a tap on s5 opens its picker.
+- **Automation quirk (not a game bug):** the first click(s) after a fresh navigation sometimes reach Phaser only as a mouse move, with no press or release (`activePointer.downTime` stays 0). A scripted `mousedown`/`mouseup` on the canvas works, and later automation clicks work. Pino's real-device pass had no such issue.
+- **Risk for Pino to re-check:** on iPhone the game now draws 4× the pixels (DPR 2). Please re-check FPS at the wave 3 peak with `?debug=1`. If it drops below 30, `?dpr=1` shows the old behaviour, and capping `DPR` at 1.5 is a one-line change.
+- Screenshot at DPR 2: ![T-15](img/T-15-dpr2-picker.jpg)

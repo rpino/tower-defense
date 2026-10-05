@@ -4,6 +4,7 @@ import { SPOTS, TOWER_FRAMES } from '../config/map';
 import { audio } from '../audio/instance';
 import { PICKER_SIZE, affordable, hudText, muteButtonRect, placePicker, resultText } from '../render/hud';
 import { isDebug } from '../render/debug';
+import { useCssCamera } from '../render/dpr';
 import { worldToScreen, type Rect } from '../render/layout';
 import { COLORS, hex } from '../render/palette';
 import { button, text, type Button } from '../render/ui';
@@ -93,6 +94,7 @@ export class UIScene extends Phaser.Scene {
     this.picker = null;
     this.overlay = null;
     this.children.removeAll(true);
+    useCssCamera(this.cameras.main);
     const L = this.gs.layout;
 
     // Top bar: lives, wave, gold (AC-7.1).
