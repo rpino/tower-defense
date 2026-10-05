@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { TOWERS, type TowerType } from '../config/balance';
 import { SPOTS, TOWER_FRAMES } from '../config/map';
 import { PICKER_SIZE, affordable, hudText, placePicker, resultText } from '../render/hud';
+import { isDebug } from '../render/debug';
 import { worldToScreen, type Rect } from '../render/layout';
 import { COLORS, hex } from '../render/palette';
 import { button, text, type Button } from '../render/ui';
@@ -30,6 +31,7 @@ export class UIScene extends Phaser.Scene {
   private picker: PickerView | null = null;
   private overlay: Phaser.GameObjects.Container | null = null;
   private lastHud = '';
+  private fps: Phaser.GameObjects.Text | null = null;
 
   constructor() {
     super('UI');
@@ -75,6 +77,10 @@ export class UIScene extends Phaser.Scene {
     this.waveButton.container.setVisible(s.phase === 'build');
     this.waveButton.setLabel(`Start wave ${s.wave}`);
     if (this.picker) this.paintPicker(this.picker);
+    if (this.fps) {
+      const g = this.gs.state;
+      this.fps.setText(`${Math.round(this.game.loop.actualFps)} fps · ${g ? g.enemies.length : 0} enemies`);
+    }
   }
 
   // ---------------------------------------------------------------- layout
@@ -110,6 +116,10 @@ export class UIScene extends Phaser.Scene {
       height: 50,
       fontSize: 22,
     });
+
+    if (isDebug(window.location.search)) {
+      this.fps = text(this, 8, L.bottomBar.y - 14, '', 14, COLORS.text, false).setOrigin(0, 0.5).setStroke('#000000', 4);
+    }
 
     if (reopen) this.openPicker(reopen);
     const s = this.gs.state;

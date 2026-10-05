@@ -172,3 +172,24 @@
   - At most 12 enemies are on screen at once, far below NFR-1's 26 and the test's cap of 30.
 - **Caveat:** aggressive players finish with all 10 lives. A real player who builds more slowly will feel more pressure. Pino's playtest in T-12 is the real check on difficulty; the numbers can be retuned under RD-5 and the test keeps the timing honest.
 - `tests/combat.test.ts` "Grunt dies after N hits" now derives N from the balance values instead of hard-coding 4.
+
+## T-12 — device pass (in progress; Pino plays on real devices)
+- Added the design §6 debug overlay: `?debug=1` shows "N fps · M enemies" above the bottom bar (`src/render/debug.ts`, `tests/debug.test.ts`).
+- Desktop URL: http://localhost:5173/?debug=1. iPhone over Wi-Fi: http://192.168.1.114:5173/?debug=1 (dev server answers 200 on the LAN address).
+- Production build OK: `dist/` is 1.8 MB.
+
+### Device checklist (fill in: ✅ / ❌ + note)
+| # | Check | Desktop Chrome | iPhone Safari |
+|---|---|---|---|
+| 1 | Title → Start; music starts on the Start tap (AC-9.3, 9.4) | | |
+| 2 | Tapping build spots opens the picker on the right spot; no mis-taps (AC-10.2) | | |
+| 3 | No page scroll, pinch zoom, double-tap zoom or text selection (AC-10.4) | — | |
+| 4 | Sound effects audible and not annoying; music OK (AC-9.2) | | |
+| 5 | Ringer switch on silent: does sound still play? (iOS 17+ expected yes) | — | |
+| 6 | Lock the phone / switch apps mid-wave, come back: game paused, no jump, sound returns after a tap (AC-10.5) | | |
+| 7 | Rotate portrait ↔ landscape mid-run: re-fits within ~0.5 s, run continues (AC-10.3) | — | |
+| 8 | FPS at the wave 3 peak, with `?debug=1` (NFR-1: ≥ 55 desktop / ≥ 30 iPhone) | | |
+| 9 | Full Victory run, then Restart (AC-8.2, 8.4) | | |
+| 10 | A Defeat run, then Restart (AC-8.1, 8.4) | | |
+| 11 | Difficulty feels right? (T-11 caveat) | | |
+| 12 | Console errors? (desktop DevTools; Safari Web Inspector if available) (NFR-8) | | |
