@@ -12,6 +12,7 @@
 | 2026-10-04 | T-8 | `feature/T-8-ui` | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | `tests/picker.test.ts`, `tests/hud.test.ts` + M1 playthrough | — | See T-8 notes |
 | 2026-10-04 | T-9 | `feature/T-9-audio` | AC-1.6, 3.2 (sound), 4.5, 5.4 (sound), 5.6 (sound), 6.5 (sound), 9.1, 9.2, 9.4, 9.6, 10.5 (audio) | `tests/audio.test.ts` | — | See T-9 notes |
 | 2026-10-04 | T-10 | `feature/T-10-music` | AC-9.3, 8.3 (music stop + jingle), 8.4 (music restart), 9.2 (victory/defeat) | `tests/music.test.ts` | — | See T-10 notes |
+| 2026-10-04 | T-11 | `feature/T-11-balance` | AC-6.4, AC-6.6; NFR-1 (peak count) | `tests/balance.test.ts`, `tests/autoplay.ts` | — | See T-11 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -134,3 +135,40 @@
   - Forced defeat: jingle 330 → 311 → 294 → 220 Hz, then no new music notes for 1.5 s: pass.
   - Restart: music restarts from bar 1 (first lead 440 Hz): pass.
 - **Observation:** the first click after a fresh navigation didn't register in the automated browser, and the second did. This looked like the automation tab gaining focus; watch for it on the iPhone in T-12.
+
+## T-11 notes — balance (RD-5: tuned without re-approval; AC-6.4 and AC-6.6 hold)
+- **Harness** (`tests/autoplay.ts`): headless scripted players that press each "Start wave" 5 s after it appears.
+  - Four aggressive strategies (archers only, cannon first, three archers then cannons, alternating) spend all gold at once on the spots that cover the most path.
+  - "Barely winning" finds the fewest Archers, bought between waves, that still win.
+- **Problems found in the starting numbers:**
+  - (1) The Cannon was a trap: 12.5 DPS for 80 gold against the Archer's 15 for 50, and splash rarely hits single-file enemies. "Cannon first" lost wave 1.
+  - (2) Far too easy: 2 Archers won the whole game with 6 lives left.
+  - Timing was already inside the window.
+- **Final BR-10 changes:**
+
+| Value | Before | After |
+|---|---|---|
+| Starting gold (BR-1) | 100 | **150** |
+| Cannon damage / fire rate | 25 / 0.5 per s | **40 / 0.6 per s** |
+| Grunt health / reward | 40 / 5 | **104 / 6** |
+| Runner health / reward | 25 / 6 | **65 / 7** |
+| Brute health / reward | 160 / 15 | **416 / 20** |
+| Waves, speeds, Archer, costs, bonuses | design §3.6 proposal | unchanged |
+
+- **Results** (`tests/balance.test.ts` asserts all of these):
+
+| Player | Outcome | Run time | Lives left | Towers | Wave times (s) | Peak enemies |
+|---|---|---|---|---|---|---|
+| archersOnly | victory | 191 s | 10 | 10 | 45 / 44 / 87 | 8 |
+| cannonFirst | victory | 191 s | 10 | 10 | 51 / 45 / 81 | 10 |
+| threeArchersThenCannons | victory | 175 s | 10 | 10 | 50 / 43 / 67 | 8 |
+| alternating | victory | 169 s | 10 | 10 | 43 / 43 / 68 | 8 |
+| barely winning (4 Archers) | victory | 213 s | 2 | 4 | 50 / 51 / 96 | 12 |
+
+- **What this means:**
+  - Every winning run takes 169–213 s, inside AC-6.6's 150–240 s.
+  - 1–3 towers lose, so the game isn't trivial.
+  - Any opening is viable.
+  - At most 12 enemies are on screen at once, far below NFR-1's 26 and the test's cap of 30.
+- **Caveat:** aggressive players finish with all 10 lives. A real player who builds more slowly will feel more pressure. Pino's playtest in T-12 is the real check on difficulty; the numbers can be retuned under RD-5 and the test keeps the timing honest.
+- `tests/combat.test.ts` "Grunt dies after N hits" now derives N from the balance values instead of hard-coding 4.

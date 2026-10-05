@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { TOWERS } from '../src/config/balance';
+import { START_GOLD, TOWERS } from '../src/config/balance';
 import { affordable, hudText, resultText } from '../src/render/hud';
 import { createRun } from '../src/sim/state';
 
 describe('T-8 HUD text (AC-7.1, AC-8.1, AC-8.2)', () => {
   it('AC-7.1: before the first wave the HUD shows "Wave 1 / 3" with starting lives and gold', () => {
     const s = createRun();
-    expect(hudText(s)).toEqual({ lives: '10', gold: '100', wave: 'Wave 1 / 3' });
+    expect(hudText(s)).toEqual({ lives: '10', gold: String(START_GOLD), wave: 'Wave 1 / 3' });
   });
 
   it('AC-7.1: during a wave it shows the current wave', () => {

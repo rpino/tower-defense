@@ -63,10 +63,11 @@ describe('T-5 targeting and firing', () => {
     expect(s.projectiles[0].targetId).toBe(front.id);
   });
 
-  it('AC-4.1: arrows home in and a Grunt dies after 4 hits', () => {
+  it('AC-4.1: arrows home in and a Grunt dies after ceil(hp / damage) hits', () => {
     const s = arena('archer');
     const g = addEnemy(s, 1.5);
-    const events = runFrozen(s, 5);
+    const hitsNeeded = Math.ceil(ENEMIES.grunt.hp / TOWERS.archer.damage);
+    const events = runFrozen(s, hitsNeeded / TOWERS.archer.fireRate + 2);
     const hits = ofType(events, 'hit').filter((h) => h.enemyId === g.id);
     expect(hits).toHaveLength(Math.ceil(ENEMIES.grunt.hp / TOWERS.archer.damage));
     expect(s.enemies).not.toContain(g);

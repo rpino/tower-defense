@@ -1,6 +1,6 @@
 // Game balance (BR-10). The single place to tune numbers; RD-5 allows tuning
 // during playtest as long as AC-6.4 (each wave harder) and AC-6.6 (150–240 s) hold.
-// Wave tables start from the design §3.6 retune proposal; T-11 finalises them.
+// Values tuned in T-11 with tests/balance.test.ts (both scripted extremes win in 150–240 s).
 
 export type TowerType = 'archer' | 'cannon';
 export type EnemyType = 'grunt' | 'runner' | 'brute';
@@ -9,7 +9,7 @@ export type EnemyType = 'grunt' | 'runner' | 'brute';
 export const START_LIVES = 10;
 
 /** BR-1: starting gold for a run. */
-export const START_GOLD = 100;
+export const START_GOLD = 150;
 
 export interface TowerStats {
   cost: number;
@@ -26,7 +26,7 @@ export interface TowerStats {
 
 export const TOWERS: Record<TowerType, TowerStats> = {
   archer: { cost: 50, damage: 10, range: 2.5, fireRate: 1.5, projectileSpeed: 8, splash: 0 },
-  cannon: { cost: 80, damage: 25, range: 2.0, fireRate: 0.5, projectileSpeed: 5, splash: 1.0 },
+  cannon: { cost: 80, damage: 40, range: 2.0, fireRate: 0.6, projectileSpeed: 5, splash: 1.0 },
 };
 
 export interface EnemyStats {
@@ -40,9 +40,9 @@ export interface EnemyStats {
 }
 
 export const ENEMIES: Record<EnemyType, EnemyStats> = {
-  grunt: { hp: 40, speed: 0.8, reward: 5, lifeCost: 1 },
-  runner: { hp: 25, speed: 1.6, reward: 6, lifeCost: 1 },
-  brute: { hp: 160, speed: 0.5, reward: 15, lifeCost: 2 },
+  grunt: { hp: 104, speed: 0.8, reward: 6, lifeCost: 1 },
+  runner: { hp: 65, speed: 1.6, reward: 7, lifeCost: 1 },
+  brute: { hp: 416, speed: 0.5, reward: 20, lifeCost: 2 },
 };
 
 export interface WaveDef {
