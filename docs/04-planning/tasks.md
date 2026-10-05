@@ -29,7 +29,7 @@
 | T-4 | Simulation core: run, economy, spawning, movement, waves, win/lose | AC-1.3, 3.2, 3.3, 3.6, 3.7, 3.9, 5.1, 5.6, 5.8, 6.1–6.4, 8.1, 8.2, 8.4, 8.5; BR-1–8, BR-10 | T-2, T-3 | M | Claude | done (awaiting review) |
 | T-5 | Simulation combat: targeting, arrows, cannon splash, rewards | AC-4.1–4.4, 4.6, 4.7, 5.4 | T-4 | M | Claude | done (awaiting review) |
 | T-6 | Boot + Title scenes, map rendering | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | T-2, T-3 | M | Claude | done (awaiting review) |
-| T-7 | GameScene loop + entity rendering (enemies, towers, projectiles, effects) | AC-4.1, 4.2 (visuals), 5.2 (Grunt, Runner), 5.3, 5.4 (effect), 10.5 (dt cap) | T-5, T-6 | L | Claude | todo |
+| T-7 | GameScene loop + entity rendering (enemies, towers, projectiles, effects) | AC-4.1, 4.2 (visuals), 5.2 (Grunt, Runner), 5.3, 5.4 (effect), 10.5 (dt cap) | T-5, T-6 | L | Claude | done (awaiting review) |
 | T-8 | UIScene: HUD, picker, wave button and banners, result overlay, restart, input ownership | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | T-7 | L | Claude | todo |
 | T-9 | Audio core + sound effects (unlock, silent fallback, gain graph, iOS resume, pre-rendered ZzFX) | AC-1.6, 3.2 (sound), 4.5, 5.4 (sound), 5.6 (sound), 6.5 (sound), 9.1, 9.2, 9.4, 10.5 (audio) | T-8 | M | Claude | todo |
 | T-10 | Music loop + victory and defeat jingles | AC-9.3, 8.3 (music/jingle), 8.4 (music restart) | T-9 | S | Claude | todo |

@@ -8,6 +8,7 @@
 | 2026-10-04 | T-4 | `feature/T-4-sim-core` | AC-1.3, 3.2, 3.3, 3.6–3.9, 5.1, 5.6, 5.8, 6.1–6.4, 8.1–8.5; BR-1–8, BR-10 | `tests/commands.test.ts`, `tests/step.test.ts`, `tests/purity.test.ts` | — | See T-4 notes |
 | 2026-10-04 | T-5 | `feature/T-5-combat` | AC-4.1–4.4, 4.6, 4.7, 5.4 | `tests/combat.test.ts` | — | See T-5 notes |
 | 2026-10-04 | T-6 | `feature/T-6-boot-title-map` | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | `tests/palette.test.ts` + manual checklist | — | See T-6 notes |
+| 2026-10-04 | T-7 | `feature/T-7-entities` | AC-4.1, 4.2 (visuals), 5.2, 5.3, 5.4 (effect), 10.5 (dt cap) | `tests/sync.test.ts` + manual check | — | See T-7 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -58,3 +59,17 @@
   - Resize re-fits the camera and rebuilds the title without reloading: pass.
   - Real rotation on the iPhone is checked in T-12.
 - **Screenshot:** ![T-6 title](img/T-6-title.jpg)
+
+## T-7 notes
+- `GameScene` owns the `GameState`. It runs a fixed 60 Hz accumulator capped at 250 ms per frame (`render/sync.ts` `accumulate`), applies commands via `command()`, and re-emits every `SimEvent` on `game.events` (`sim:event`). Map taps emit `spot:tap` with the nearest *free* spot id, or null.
+- `render/entities.ts` syncs towers (Container of stacked Kenney pieces plus a code-drawn cannon barrel, with a pop-in tween), enemies (cached code-drawn textures, shadow, walk bob, health bar once damaged) and projectiles (arrow line or cannonball; height interpolated from the tower top, cannonballs arc) by id.
+- `render/effects.ts`: death puff and explosion. The explosion ellipse matches the 1-tile splash on the ground (radius × 66√2 by × 33√2).
+- AC-8.3 freeze: `tweens.pauseAll()` on victory or defeat; `step()` is already a no-op once the run is over.
+- Temporary dev keys (S start, A/C build on the last tapped spot, W start wave) live in DEV only and are removed in T-8.
+- **Manual check (desktop Chrome):**
+  - A scripted wave plays: enemies walk the path, towers fire, arrows and cannonballs fly, the explosion and health bars show, kills add gold (5 kills = +25).
+  - Depth sorting is correct: a Grunt behind an Archer tower is partly hidden by it.
+  - Grunt, Runner and Brute are clearly different in shape and size.
+  - The background tab's requestAnimationFrame was throttled during automation, so frames were stepped through `GameScene.update` for the screenshots. This automation quirk doesn't affect real play.
+  - **For T-12/T-14:** the Runner is small at phone zoom (≈ 9 px at 0.33). Consider scaling up enemies on small screens if it's hard to see on the iPhone.
+- **Screenshot:** ![T-7 entities](img/T-7-entities.png)
