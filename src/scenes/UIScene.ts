@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { TOWERS, type TowerType } from '../config/balance';
 import { SPOTS, TOWER_FRAMES } from '../config/map';
-import { PICKER_SIZE, affordable, hudText, placePicker, resultText } from '../render/hud';
+import { audio } from '../audio/instance';
+import { PICKER_SIZE, affordable, hudText, muteButtonRect, placePicker, resultText } from '../render/hud';
 import { isDebug } from '../render/debug';
 import { worldToScreen, type Rect } from '../render/layout';
 import { COLORS, hex } from '../render/palette';
@@ -117,6 +118,8 @@ export class UIScene extends Phaser.Scene {
       fontSize: 22,
     });
 
+    this.muteButton();
+
     if (isDebug(window.location.search)) {
       this.fps = text(this, 8, L.bottomBar.y - 14, '', 14, COLORS.text, false).setOrigin(0, 0.5).setStroke('#000000', 4);
     }
@@ -124,6 +127,33 @@ export class UIScene extends Phaser.Scene {
     if (reopen) this.openPicker(reopen);
     const s = this.gs.state;
     if (s && resultText(s)) this.showOverlay();
+  }
+
+  /** AC-9.5: speaker icon; a red slash when muted. The setting lives in the audio engine, so it survives Restart. */
+  private muteButton(): void {
+    const r = muteButtonRect(this.gs.layout);
+    const g = this.add.graphics({ x: r.x + r.w / 2, y: r.y + r.h / 2 });
+    const draw = () => {
+      g.clear();
+      g.fillStyle(COLORS.button, 1).fillRoundedRect(-r.w / 2, -r.h / 2, r.w, r.h, 10);
+      g.lineStyle(2, 0xffffff, 0.35).strokeRoundedRect(-r.w / 2, -r.h / 2, r.w, r.h, 10);
+      g.fillStyle(COLORS.text, 1);
+      g.fillRect(-12, -5, 7, 10);
+      g.fillTriangle(-6, -5, 4, -13, 4, 13).fillTriangle(-6, -5, 4, 13, -6, 5);
+      if (audio.muted) {
+        g.lineStyle(4, COLORS.danger, 1).lineBetween(-14, -14, 14, 14);
+      } else {
+        g.lineStyle(2.5, COLORS.text, 1);
+        g.beginPath().arc(4, 0, 7, -0.9, 0.9).strokePath();
+        g.beginPath().arc(4, 0, 12, -0.9, 0.9).strokePath();
+      }
+    };
+    draw();
+    const hit = this.add.zone(r.x, r.y, r.w, r.h).setOrigin(0).setInteractive({ useHandCursor: true });
+    hit.on('pointerup', () => {
+      audio.setMuted(!audio.muted);
+      draw();
+    });
   }
 
   private heart(x: number, y: number): void {

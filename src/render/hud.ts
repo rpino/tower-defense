@@ -32,3 +32,9 @@ export function resultText(s: GameState): { title: string; line: string } | null
 export function affordable(gold: number): Record<TowerType, boolean> {
   return { archer: gold >= TOWERS.archer.cost, cannon: gold >= TOWERS.cannon.cost };
 }
+
+/** AC-9.5 / AC-10.2: mute toggle at the right end of the bottom bar, 48×48. */
+export function muteButtonRect(L: Layout): { x: number; y: number; w: number; h: number } {
+  const size = 48;
+  return { x: L.viewW - 8 - size, y: L.bottomBar.y + (L.bottomBar.h - size) / 2, w: size, h: size };
+}

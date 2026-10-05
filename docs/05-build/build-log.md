@@ -14,6 +14,7 @@
 | 2026-10-04 | T-10 | `feature/T-10-music` | AC-9.3, 8.3 (music stop + jingle), 8.4 (music restart), 9.2 (victory/defeat) | `tests/music.test.ts` | — | See T-10 notes |
 | 2026-10-04 | T-11 | `feature/T-11-balance` | AC-6.4, AC-6.6; NFR-1 (peak count) | `tests/balance.test.ts`, `tests/autoplay.ts` | — | See T-11 notes |
 | 2026-10-04 | T-12 | `feature/T-12-device-pass` | NFR-1, 3, 7, 8; AC-2.2, 10.1–10.5 (real devices) | `tests/debug.test.ts` + device checklist | Pino (playtest) | Passed: "all looked good" |
+| 2026-10-04 | T-13 | `feature/T-13-mute` | AC-9.5 (AC-5.2 Brute and AC-9.6 done earlier in T-7/T-9) | `tests/mute.test.ts` | — | See T-13 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -199,3 +200,12 @@
 - Pino played on desktop Chrome and iPhone Safari and reported "all looked good". All checklist items passed, with no issues raised.
 - No individual measurements (e.g. exact FPS figures) were recorded. The pass is recorded as Pino's overall sign-off.
 - One mid-test report of "no music" turned out to be the wrong audio output device on Pino's side, not a defect.
+
+## T-13 notes
+- Brute visuals (AC-5.2) were already built in T-7, and the 4-copy sound limit (AC-9.6) in T-9. This task added only the **mute toggle** (AC-9.5).
+- The toggle is a 48×48 speaker button at the right end of the bottom bar (`muteButtonRect`, tested to sit inside the bar and clear of "Start wave" at 360 px). It shows a red slash when muted.
+- The setting lives in the audio engine singleton, so Restart (a new `GameState`) keeps it. Tab hide/show doesn't change it either (T-9 test).
+- **Manual check (Chrome):**
+  - Clicking the button sets `muted = true` and master gain 0, and shows the red slash: pass.
+  - The tap didn't open a picker underneath: pass.
+- **Automation note:** the first click after a fresh navigation sometimes doesn't register in the automation tab, and the tab sometimes stops repainting until a frame is forced through `game.step`. Both are browser-automation quirks; Pino's real-device pass had no such issue.

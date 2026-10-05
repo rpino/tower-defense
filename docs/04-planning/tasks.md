@@ -35,7 +35,7 @@
 | T-10 | Music loop + victory and defeat jingles | AC-9.3, 8.3 (music/jingle), 8.4 (music restart) | T-9 | S | Claude | done (awaiting review) |
 | T-11 | Balance test (two strategies) + BR-10 retune | AC-6.4, AC-6.6; NFR-1 (peak count) | T-5 | M | Claude | done (awaiting review) |
 | T-12 | Device pass: desktop Chrome + iPhone Safari over LAN, fix issues | NFR-1, 3, 7, 8; AC-10.1–10.5, AC-2.2 | T-10, T-11 | M | **Pino** + Claude | done (Pino: passed) |
-| T-13 | *(Should)* Brute visuals, mute toggle, sound limit | AC-5.2 (Brute), 9.5, 9.6 | T-12 | S | Claude | todo |
+| T-13 | *(Should)* Brute visuals, mute toggle, sound limit | AC-5.2 (Brute), 9.5, 9.6 | T-12 | S | Claude | done (awaiting review) |
 | T-14 | *(Should)* Range circles, floating gold text, lives flash | AC-3.10, 5.5, 5.7 | T-12 | S | Claude | todo |
 | T-15 | *(Should)* High-DPI rendering on iPhone — time-box 45 min | Design §3.5 (sharpness) | T-12 | S | Claude | todo |
 | T-16 | Ship prep: README + credits, `npm run build` + preview, size check, deploy discussion | NFR-2, NFR-6, NFR-9, AC-1.4 | T-12 (and any M4 done) | S | Claude + **Pino** | todo |
