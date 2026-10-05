@@ -38,7 +38,7 @@
 | T-13 | *(Should)* Brute visuals, mute toggle, sound limit | AC-5.2 (Brute), 9.5, 9.6 | T-12 | S | Claude | done (awaiting review) |
 | T-14 | *(Should)* Range circles, floating gold text, lives flash | AC-3.10, 5.5, 5.7 | T-12 | S | Claude | done (awaiting review) |
 | T-15 | *(Should)* High-DPI rendering on iPhone — time-box 45 min | Design §3.5 (sharpness) | T-12 | S | Claude | done (awaiting review) |
-| T-16 | Ship prep: README + credits, `npm run build` + preview, size check, deploy discussion | NFR-2, NFR-6, NFR-9, AC-1.4 | T-12 (and any M4 done) | S | Claude + **Pino** | todo |
+| T-16 | Ship prep: README + credits, `npm run build` + preview, size check, deploy discussion | NFR-2, NFR-6, NFR-9, AC-1.4 | T-12 (and any M4 done) | S | Claude + **Pino** | done (deploy discussion pending) |
 
 Critical path: T-1 → T-2 → T-4 → T-5 → T-7 → T-8 → T-9 → T-10 → T-12 → T-16. T-3 runs alongside T-2. T-11 can run once T-5 is done, alongside T-6 to T-10.
 

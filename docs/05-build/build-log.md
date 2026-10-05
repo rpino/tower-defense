@@ -17,6 +17,7 @@
 | 2026-10-04 | T-13 | `feature/T-13-mute` | AC-9.5 (AC-5.2 Brute and AC-9.6 done earlier in T-7/T-9) | `tests/mute.test.ts` | — | See T-13 notes |
 | 2026-10-04 | T-14 | `feature/T-14-polish` | AC-3.10, AC-5.5, AC-5.7 | `tests/polish.test.ts` | — | See T-14 notes |
 | 2026-10-04 | T-15 | `feature/T-15-hidpi` | Design §3.5 (sharpness); AC-10.3 re-verified | `tests/dpr.test.ts` | — | See T-15 notes |
+| 2026-10-04 | T-16 | `feature/T-16-ship-prep` | NFR-2, NFR-6, NFR-9 (prep), AC-1.4 | full suite + preview smoke test | — | See T-16 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -237,3 +238,21 @@
 - **Automation quirk (not a game bug):** the first click(s) after a fresh navigation sometimes reach Phaser only as a mouse move, with no press or release (`activePointer.downTime` stays 0). A scripted `mousedown`/`mouseup` on the canvas works, and later automation clicks work. Pino's real-device pass had no such issue.
 - **Risk for Pino to re-check:** on iPhone the game now draws 4× the pixels (DPR 2). Please re-check FPS at the wave 3 peak with `?debug=1`. If it drops below 30, `?dpr=1` shows the old behaviour, and capping `DPR` at 1.5 is a one-line change.
 - Screenshot at DPR 2: ![T-15](img/T-15-dpr2-picker.jpg)
+
+### T-15 re-check
+- Pino re-checked on the iPhone after T-15: "all good". This covers sharpness, FPS with `?debug=1`, tap accuracy and rotation.
+
+## T-16 notes — ship prep
+- **README.md:** how to play, how to run, debug switches, architecture, and credits/licences (Kenney CC0; ZzFX MIT port; Phaser MIT).
+- **Production build (fresh `npm run build`):** `dist/` is 1.8 MB on disk.
+  - JS 1.20 MB, or 321 KB gzip.
+  - Images 519 KB; XML and licence 14 KB.
+  - Transferred ≈ 0.85 MB, so ≈ 0.7 s on 10 Mbps. NFR-2 (≤ 5 MB, ≤ 5 s) is met.
+- **Dev-only handles:** `window.__game` and `window.__audio` are absent from the production bundle (0 matches) and `undefined` at runtime.
+- **Preview smoke test** (`vite preview`, port 4173):
+  - All files served 200.
+  - Start → HUD → build an Archer on s5 (gold 150 → 100) → wave 1 starts with banner and enemies.
+  - No console errors or warnings.
+- **Planned "remove atlas debug scene":** nothing to remove. T-2 used offline contact sheets instead of an in-game `?atlas=1` scene.
+- Full suite: 131 tests passing; type-check clean.
+- **Next (NFR-9):** stop for the Vercel deploy discussion with Pino.
