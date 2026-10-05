@@ -99,3 +99,7 @@
   - **Portrait phones:** the map is width-limited (zoom ≈ 0.33), so it looks small in portrait. Landscape is much bigger. Raised with Pino at the M1 demo.
   - Fast-forwarding through script leaves overlapping banners and frozen effects in screenshots. That's an artefact of stepping many seconds within one real frame, not normal play.
 - **Screenshots:** ![Victory](img/T-8-victory.jpg) ![Phone picker](img/T-8-phone-picker.png)
+
+## M1 demo decisions (Pino, 2026-10-04)
+- Game title stays "Tower Defense".
+- Portrait phones: leave as is (map width-limited, letterboxed); no rotate hint.
