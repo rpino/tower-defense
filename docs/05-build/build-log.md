@@ -11,6 +11,7 @@
 | 2026-10-04 | T-7 | `feature/T-7-entities` | AC-4.1, 4.2 (visuals), 5.2, 5.3, 5.4 (effect), 10.5 (dt cap) | `tests/sync.test.ts` + manual check | — | See T-7 notes |
 | 2026-10-04 | T-8 | `feature/T-8-ui` | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | `tests/picker.test.ts`, `tests/hud.test.ts` + M1 playthrough | — | See T-8 notes |
 | 2026-10-04 | T-9 | `feature/T-9-audio` | AC-1.6, 3.2 (sound), 4.5, 5.4 (sound), 5.6 (sound), 6.5 (sound), 9.1, 9.2, 9.4, 9.6, 10.5 (audio) | `tests/audio.test.ts` | — | See T-9 notes |
+| 2026-10-04 | T-10 | `feature/T-10-music` | AC-9.3, 8.3 (music stop + jingle), 8.4 (music restart), 9.2 (victory/defeat) | `tests/music.test.ts` | — | See T-10 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -120,3 +121,16 @@
   - No AudioContext before the first tap: pass.
   - After Start: context `running`, 48 kHz, 7 buffers prepared, a build plays a voice: pass.
   - Listening by ear is left to Pino at the M2 demo.
+
+## T-10 notes
+- **Sequencer** (`src/audio/music.ts`): a lookahead step sequencer (250 ms ahead, ticked every 50 ms).
+  - Song: 4 bars of 8th notes at 132 BPM in A minor (Am–G–F–E). Square-wave lead, triangle-wave bass. It loops.
+  - `stop()` cancels every note that hasn't started yet. `start()` always restarts from bar 1.
+  - Jingles: victory C5–E5–G5–C6 (rising); defeat E4–D♯4–D4–A3 (falling).
+  - The scheduler is injectable (`NoteScheduler`), so tests run on a fake clock; `webAudioScheduler` plays through the engine's music bus.
+- **Wiring:** music starts on `run:started` (Start and Restart). On `victory`/`defeat` it stops and plays the jingle. The music object is created the first time the AudioContext exists, and stays absent when audio is silent.
+- **Manual check (Chrome; oscillator creation counted with a patched `createOscillator`):**
+  - After Start: 23 notes in ~3 s, square lead (440/523/659 Hz) plus triangle bass (110 Hz): pass.
+  - Forced defeat: jingle 330 → 311 → 294 → 220 Hz, then no new music notes for 1.5 s: pass.
+  - Restart: music restarts from bar 1 (first lead 440 Hz): pass.
+- **Observation:** the first click after a fresh navigation didn't register in the automated browser, and the second did. This looked like the automation tab gaining focus; watch for it on the iPhone in T-12.
