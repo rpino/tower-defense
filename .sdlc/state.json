@@ -1,0 +1,396 @@
+{
+  "schema_version": 1,
+  "project": "Tower Defense Project",
+  "slug": "tower-defense-project",
+  "created": "2026-10-04T20:04:01-07:00",
+  "updated": "2026-10-04T20:52:11-07:00",
+  "approvers": {
+    "product_owner": "Pino",
+    "tech_lead": "Pino",
+    "qa_lead": "Pino",
+    "team": "Pino"
+  },
+  "settings": {
+    "code_paths": [
+      "src/",
+      "app/",
+      "lib/",
+      "services/",
+      "packages/",
+      "api/",
+      "web/",
+      "tests/",
+      "test/"
+    ],
+    "require_tests_on_commit": true,
+    "test_markers": [
+      "test",
+      "spec",
+      "__tests__"
+    ]
+  },
+  "current_phase": "build",
+  "phases": {
+    "discovery": {
+      "status": "approved",
+      "artifacts": [
+        "docs/01-discovery/problem-brief.md"
+      ],
+      "approved_by": "Pino",
+      "approved_on": "2026-10-04",
+      "open_issues": [
+        {
+          "id": "DIS-1",
+          "text": "Art source: free asset packs (CC0, e.g. Kenney/itch.io), AI-generated pixel art, or procedural code-drawn pixel graphics?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Use Kenney Tower Defense (isometric) pack, CC0, in assets/kenney_tower-defense",
+          "resolved_on": "2026-10-04"
+        },
+        {
+          "id": "DIS-2",
+          "text": "Exact jam deadline (date/time) and submission platform, if it isn't just the Vercel link?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Deadline 2026-10-05 20:00 Pacific. Build and test locally first; Vercel deployment discussed afterwards",
+          "resolved_on": "2026-10-04"
+        },
+        {
+          "id": "DIS-3",
+          "text": "Kenney pack is low-poly isometric, not 8-bit pixel art: drop the 8-bit goal and use the isometric look?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Drop 8-bit goal; use Kenney low-poly isometric look",
+          "resolved_on": "2026-10-04"
+        },
+        {
+          "id": "DIS-4",
+          "text": "Pack has no enemies, projectiles, effects, UI or audio: source from other CC0 Kenney packs, draw in code, or mix?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Enemies, projectiles, effects, UI drawn in code; sound effects and music synthesized in code (Web Audio API)",
+          "resolved_on": "2026-10-04"
+        }
+      ]
+    },
+    "requirements": {
+      "status": "approved",
+      "artifacts": [
+        "docs/02-requirements/requirements.md"
+      ],
+      "approved_by": "Pino",
+      "approved_on": "2026-10-04",
+      "open_issues": [
+        {
+          "id": "REQ-1",
+          "text": "Accept BR-10 balance, 8x8 map, ~24-tile path, 10 build spots as tunable starting values (AC-6.4, AC-6.6 must still hold)?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Accepted as tunable starting values",
+          "resolved_on": "2026-10-04"
+        },
+        {
+          "id": "REQ-2",
+          "text": "Accept priority split: Should = Brute, range circles, floating gold text, lives flash, mute toggle, sound limit; Must = rest incl. music?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Accepted priority split",
+          "resolved_on": "2026-10-04"
+        },
+        {
+          "id": "REQ-3",
+          "text": "Accept required test browsers = desktop Chrome + PO's own phone (others best effort)? Which phone/browser?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Accepted; PO phone = iPhone Safari",
+          "resolved_on": "2026-10-04"
+        }
+      ]
+    },
+    "design": {
+      "status": "approved",
+      "artifacts": [
+        "docs/03-design/design.md",
+        "docs/03-design/adr/ADR-001-game-framework.md",
+        "docs/03-design/adr/ADR-002-pure-simulation.md",
+        "docs/03-design/adr/ADR-003-synth-audio.md"
+      ],
+      "approved_by": "Pino",
+      "approved_on": "2026-10-04",
+      "open_issues": [
+        {
+          "id": "DES-1",
+          "text": "Build-spot spacing (AC-10.2): A) nearest spot wins, spots >=2 tiles apart (recommended), or B) strict >=138 world px spacing so 22px tap circles never touch?",
+          "raised": "2026-10-04",
+          "resolved": true,
+          "resolution": "Option A: nearest spot wins, spots >=2 tiles apart",
+          "resolved_on": "2026-10-04"
+        }
+      ]
+    },
+    "planning": {
+      "status": "approved",
+      "artifacts": [
+        "docs/04-planning/tasks.md"
+      ],
+      "approved_by": "Pino",
+      "approved_on": "2026-10-04",
+      "open_issues": []
+    },
+    "build": {
+      "status": "draft",
+      "artifacts": [],
+      "approved_by": null,
+      "approved_on": null,
+      "open_issues": []
+    },
+    "qa": {
+      "status": "not_started",
+      "artifacts": [],
+      "approved_by": null,
+      "approved_on": null,
+      "open_issues": []
+    },
+    "review": {
+      "status": "not_started",
+      "artifacts": [],
+      "approved_by": null,
+      "approved_on": null,
+      "open_issues": []
+    },
+    "release": {
+      "status": "not_started",
+      "artifacts": [],
+      "approved_by": null,
+      "approved_on": null,
+      "open_issues": []
+    },
+    "operate": {
+      "status": "not_started",
+      "artifacts": [],
+      "approved_by": null,
+      "approved_on": null,
+      "open_issues": []
+    },
+    "knowledge": {
+      "status": "not_started",
+      "artifacts": [],
+      "approved_by": null,
+      "approved_on": null,
+      "open_issues": []
+    }
+  },
+  "history": [
+    {
+      "ts": "2026-10-04T20:04:01-07:00",
+      "event": "project_created",
+      "by": "Pino",
+      "note": "Tower Defense Project"
+    },
+    {
+      "ts": "2026-10-04T20:04:07-07:00",
+      "event": "status_draft",
+      "phase": "discovery"
+    },
+    {
+      "ts": "2026-10-04T20:13:58-07:00",
+      "event": "issue_added",
+      "phase": "discovery",
+      "note": "DIS-1: Art source: free asset packs (CC0, e.g. Kenney/itch.io), AI-generated pixel art, or procedural code-drawn pixel graphics?"
+    },
+    {
+      "ts": "2026-10-04T20:13:58-07:00",
+      "event": "issue_added",
+      "phase": "discovery",
+      "note": "DIS-2: Exact jam deadline (date/time) and submission platform, if it isn't just the Vercel link?"
+    },
+    {
+      "ts": "2026-10-04T20:13:58-07:00",
+      "event": "status_in_review",
+      "phase": "discovery"
+    },
+    {
+      "ts": "2026-10-04T20:19:37-07:00",
+      "event": "status_draft",
+      "phase": "discovery"
+    },
+    {
+      "ts": "2026-10-04T20:19:37-07:00",
+      "event": "issue_resolved",
+      "phase": "discovery",
+      "note": "DIS-1: Use Kenney Tower Defense (isometric) pack, CC0, in assets/kenney_tower-defense"
+    },
+    {
+      "ts": "2026-10-04T20:19:37-07:00",
+      "event": "issue_resolved",
+      "phase": "discovery",
+      "note": "DIS-2: Deadline 2026-10-05 20:00 Pacific. Build and test locally first; Vercel deployment discussed afterwards"
+    },
+    {
+      "ts": "2026-10-04T20:20:00-07:00",
+      "event": "issue_added",
+      "phase": "discovery",
+      "note": "DIS-3: Kenney pack is low-poly isometric, not 8-bit pixel art: drop the 8-bit goal and use the isometric look?"
+    },
+    {
+      "ts": "2026-10-04T20:20:00-07:00",
+      "event": "issue_added",
+      "phase": "discovery",
+      "note": "DIS-4: Pack has no enemies, projectiles, effects, UI or audio: source from other CC0 Kenney packs, draw in code, or mix?"
+    },
+    {
+      "ts": "2026-10-04T20:20:00-07:00",
+      "event": "status_in_review",
+      "phase": "discovery"
+    },
+    {
+      "ts": "2026-10-04T20:22:21-07:00",
+      "event": "status_draft",
+      "phase": "discovery"
+    },
+    {
+      "ts": "2026-10-04T20:22:21-07:00",
+      "event": "issue_resolved",
+      "phase": "discovery",
+      "note": "DIS-3: Drop 8-bit goal; use Kenney low-poly isometric look"
+    },
+    {
+      "ts": "2026-10-04T20:22:21-07:00",
+      "event": "issue_resolved",
+      "phase": "discovery",
+      "note": "DIS-4: Enemies, projectiles, effects, UI drawn in code; sound effects and music synthesized in code (Web Audio API)"
+    },
+    {
+      "ts": "2026-10-04T20:22:22-07:00",
+      "event": "status_in_review",
+      "phase": "discovery"
+    },
+    {
+      "ts": "2026-10-04T20:23:36-07:00",
+      "event": "approved",
+      "phase": "discovery",
+      "by": "Pino"
+    },
+    {
+      "ts": "2026-10-04T20:24:05-07:00",
+      "event": "status_draft",
+      "phase": "requirements"
+    },
+    {
+      "ts": "2026-10-04T20:29:15-07:00",
+      "event": "issue_added",
+      "phase": "requirements",
+      "note": "REQ-1: Accept BR-10 balance, 8x8 map, ~24-tile path, 10 build spots as tunable starting values (AC-6.4, AC-6.6 must still hold)?"
+    },
+    {
+      "ts": "2026-10-04T20:29:15-07:00",
+      "event": "issue_added",
+      "phase": "requirements",
+      "note": "REQ-2: Accept priority split: Should = Brute, range circles, floating gold text, lives flash, mute toggle, sound limit; Must = rest incl. music?"
+    },
+    {
+      "ts": "2026-10-04T20:29:15-07:00",
+      "event": "issue_added",
+      "phase": "requirements",
+      "note": "REQ-3: Accept required test browsers = desktop Chrome + PO's own phone (others best effort)? Which phone/browser?"
+    },
+    {
+      "ts": "2026-10-04T20:29:16-07:00",
+      "event": "status_in_review",
+      "phase": "requirements"
+    },
+    {
+      "ts": "2026-10-04T20:30:34-07:00",
+      "event": "status_draft",
+      "phase": "requirements"
+    },
+    {
+      "ts": "2026-10-04T20:30:34-07:00",
+      "event": "issue_resolved",
+      "phase": "requirements",
+      "note": "REQ-1: Accepted as tunable starting values"
+    },
+    {
+      "ts": "2026-10-04T20:30:34-07:00",
+      "event": "issue_resolved",
+      "phase": "requirements",
+      "note": "REQ-2: Accepted priority split"
+    },
+    {
+      "ts": "2026-10-04T20:30:35-07:00",
+      "event": "issue_resolved",
+      "phase": "requirements",
+      "note": "REQ-3: Accepted; PO phone = iPhone Safari"
+    },
+    {
+      "ts": "2026-10-04T20:30:35-07:00",
+      "event": "status_in_review",
+      "phase": "requirements"
+    },
+    {
+      "ts": "2026-10-04T20:30:52-07:00",
+      "event": "approved",
+      "phase": "requirements",
+      "by": "Pino"
+    },
+    {
+      "ts": "2026-10-04T20:32:19-07:00",
+      "event": "status_draft",
+      "phase": "design"
+    },
+    {
+      "ts": "2026-10-04T20:39:35-07:00",
+      "event": "issue_added",
+      "phase": "design",
+      "note": "DES-1: Build-spot spacing (AC-10.2): A) nearest spot wins, spots >=2 tiles apart (recommended), or B) strict >=138 world px spacing so 22px tap circles never touch?"
+    },
+    {
+      "ts": "2026-10-04T20:39:36-07:00",
+      "event": "status_in_review",
+      "phase": "design"
+    },
+    {
+      "ts": "2026-10-04T20:42:30-07:00",
+      "event": "status_draft",
+      "phase": "design"
+    },
+    {
+      "ts": "2026-10-04T20:42:30-07:00",
+      "event": "issue_resolved",
+      "phase": "design",
+      "note": "DES-1: Option A: nearest spot wins, spots >=2 tiles apart"
+    },
+    {
+      "ts": "2026-10-04T20:42:31-07:00",
+      "event": "status_in_review",
+      "phase": "design"
+    },
+    {
+      "ts": "2026-10-04T20:43:46-07:00",
+      "event": "approved",
+      "phase": "design",
+      "by": "Pino"
+    },
+    {
+      "ts": "2026-10-04T20:45:11-07:00",
+      "event": "status_draft",
+      "phase": "planning"
+    },
+    {
+      "ts": "2026-10-04T20:47:01-07:00",
+      "event": "status_in_review",
+      "phase": "planning"
+    },
+    {
+      "ts": "2026-10-04T20:50:40-07:00",
+      "event": "approved",
+      "phase": "planning",
+      "by": "Pino"
+    },
+    {
+      "ts": "2026-10-04T20:52:11-07:00",
+      "event": "status_draft",
+      "phase": "build"
+    }
+  ]
+}
