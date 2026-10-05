@@ -4,16 +4,16 @@
 
 | Commits | Tasks | ACs | Reviewer (AI first pass) | Human approver | Decision |
 |---|---|---|---|---|---|
-| f30c997 … 49befcc | T-1 … T-16 | all of US-1 … US-10, NFR-1 … 9 | Claude | Pino | Approve, pending the minor fixes decision (REV-1) |
+| f30c997 … 49befcc | T-1 … T-16 | all of US-1 … US-10, NFR-1 … 9 | Claude | Pino | Approve; REV-1 fixes applied in 791fa00 |
 | 6d807a4 | QA tests | boundary cases | Claude | Pino | Approve |
 
 ## Findings
 | ID | File:line | Severity | Finding | Suggested fix | Status |
 |---|---|---|---|---|---|
-| R-01 | `src/audio/audio.ts:92-105` | Minor | `play()` starts buffer sources while the AudioContext isn't `running` (e.g. iOS `interrupted`, or suspended while the tab is hidden). Their `onended` doesn't fire until resume, so a key can hit the 4-copy cap, and the queued sounds play as a burst when audio resumes. | Return early from `play()` when `ctx.state !== 'running'`, and add a unit test with the fake context. | Open (REV-1) |
+| R-01 | `src/audio/audio.ts:92-105` | Minor | `play()` starts buffer sources while the AudioContext isn't `running` (e.g. iOS `interrupted`, or suspended while the tab is hidden). Their `onended` doesn't fire until resume, so a key can hit the 4-copy cap, and the queued sounds play as a burst when audio resumes. | Return early from `play()` when `ctx.state !== 'running'`, and add a unit test with the fake context. | **Fixed** in 791fa00 (test: `audio.test.ts` "play() skips while suspended or interrupted") |
 | R-02 | `src/audio/music.ts:96-100` | Nit | `jingle()` cancels only notes that haven't started, so up to ~0.25 s of already-started music overlaps the jingle's start. | Accept; it's barely audible. Alternatively, fade the music bus over 50 ms. | Accept as-is |
-| R-03 | `src/scenes/UIScene.ts:206,234-235` | Nit | Picker option geometry is computed twice: `openPicker` (with dead arithmetic `(PICKER_SIZE.optionW + 0) + (i ? 0 : 0)`) and again in `paintPicker`. The two could drift apart. | Extract `pickerOptionRect(i)` into `render/hud.ts` and use it in both places. | Open (REV-1) |
-| R-04 | `src/main.ts:19-24, 34-39` | Nit | The initial size comes from `window.innerWidth/innerHeight`; later resizes use `#game` client size. On iOS the two can differ (address bar / `100dvh`) until the first resize event. | Size from `#game` at startup as well. | Open (REV-1) |
+| R-03 | `src/scenes/UIScene.ts:206,234-235` | Nit | Picker option geometry is computed twice: `openPicker` (with dead arithmetic `(PICKER_SIZE.optionW + 0) + (i ? 0 : 0)`) and again in `paintPicker`. The two could drift apart. | Extract `pickerOptionRect(i)` into `render/hud.ts` and use it in both places. | **Fixed** in 791fa00 (`pickerOptionRect`, test in `picker.test.ts`) |
+| R-04 | `src/main.ts:19-24, 34-39` | Nit | The initial size comes from `window.innerWidth/innerHeight`; later resizes use `#game` client size. On iOS the two can differ (address bar / `100dvh`) until the first resize event. | Size from `#game` at startup as well. | **Fixed** in 791fa00 (checked in Chrome: loads and lays out correctly) |
 | R-05 | `index.html:6` | Minor (accepted) | `maximum-scale=1, user-scalable=no` blocks page zoom (WCAG 1.4.4). This is deliberate: AC-10.4 requires no zoom during play. | None; requirement-driven. | Accept (AC-10.4) |
 | R-06 | `src/main.ts:14` | Nit | Phaser prints its console banner in production. It isn't an error, but clutters the console. | `banner: false` in the game config. | Optional |
 | R-07 | `src/sim/step.ts:38-41` | Info | `pathPoint()` is called per tower × enemy every step (≈ 7k calls/s at the peak of 12 enemies and 10 towers). That's fine at this scale; NFR-1 passed on iPhone. | None now. If enemy counts grow, cache each enemy's position once per step. | No action |
@@ -45,10 +45,14 @@
 | 10 | Abuse cases | Pass | No scores, leaderboards or economy outside the browser, so client tampering only affects the tamperer |
 | 11 | Configuration | Low | No security headers configured (CSP, `X-Content-Type-Options`, `frame-ancestors`). Vercel serves static files over HTTPS by default. Optional hardening: a `vercel.json`/`vercel.ts` with `X-Content-Type-Options: nosniff` and a CSP of `default-src 'self'; style-src 'self' 'unsafe-inline'`, tested before release because Phaser uses inline styles and blob/data URLs for textures |
 
-**Security findings:** one **Low** (S-01, check 11, missing security headers), which is optional for a static game with no data. **No Critical/High/Medium.**
+**Security findings:** one **Low** (S-01, check 11, missing security headers). **Decision REV-2 (Pino):** add `X-Content-Type-Options: nosniff` only, in the Vercel config during Release. No CSP. **No Critical/High/Medium.**
 
 ## Sign-off
 - [x] No open Blocker/Major findings
 - [x] No open Critical/High security findings
-- [ ] Decision REV-1: fix R-01, R-03 and R-04 before release (≈ 15 min, with a test for R-01), or accept them as-is
+- [x] Decision REV-1 (Pino): fix R-01, R-03, R-04. Done in 791fa00; full suite 139/139, type check clean, picker and startup re-checked in Chrome
+- [x] Decision REV-2 (Pino): `nosniff` header only, added in the Release phase
 - Approved by: ____ on ____
+
+## Notes
+- While re-checking the fixes, the long-running Vite dev server was serving stale public files (every asset returned `index.html`). The cause was that fast-forwarding `main` earlier briefly removed and re-created `public/`. Restarting the dev server fixed it. This is a dev-environment issue only; production builds read `public/` fresh.
