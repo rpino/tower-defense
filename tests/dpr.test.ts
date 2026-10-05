@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { pickDpr } from '../src/render/dpr';
-import { computeLayout } from '../src/render/layout';
 
 describe('T-15 render resolution (design §3.5 sharpness)', () => {
   it('uses the device pixel ratio, capped at 2', () => {
@@ -21,8 +20,4 @@ describe('T-15 render resolution (design §3.5 sharpness)', () => {
     expect(pickDpr(Number.NaN, '')).toBe(1);
   });
 
-  it('layout stays in CSS px: the same viewport gives the same layout at any DPR', () => {
-    // GameScene multiplies only the camera zoom by the DPR; tap radii and HUD sizes stay in CSS px.
-    expect(computeLayout(390, 844)).toEqual(computeLayout(390, 844));
-  });
 });
