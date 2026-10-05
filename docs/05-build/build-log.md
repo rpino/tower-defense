@@ -222,7 +222,7 @@
   - Lives counter and heart flash on an injected leak: pass.
 - The browser automation again showed stale frames until frames were forced. Effects were checked by inspecting objects and forcing frames.
 
-## T-15 notes — high-DPI rendering (time box 45 min: ~21:59 → ~22:22, within the box; kept)
+## T-15 notes — high-DPI rendering (time box 45 min: started 21:59, done 22:03 by the system clock; kept)
 - `src/render/dpr.ts`: `DPR = min(devicePixelRatio, 2)`; `?dpr=1|2` overrides it for testing (tested).
 - **Phaser** now uses `Scale.NONE` with the canvas at CSS size × DPR and `zoom: 1/DPR`, so the canvas is drawn at full resolution and shown at CSS size. Window `resize` and `visualViewport` resize call `game.scale.resize(...)`, which replaces what `Scale.RESIZE` did (AC-10.3).
 - **Layout stays in CSS px** (`computeLayout` is unchanged):
