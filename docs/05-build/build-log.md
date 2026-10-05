@@ -7,6 +7,7 @@
 | 2026-10-04 | T-3 | `feature/T-3-iso-layout` | AC-2.2, AC-10.2, AC-10.3 (maths) | `tests/iso.test.ts`, `tests/layout.test.ts` | — | See T-3 notes |
 | 2026-10-04 | T-4 | `feature/T-4-sim-core` | AC-1.3, 3.2, 3.3, 3.6–3.9, 5.1, 5.6, 5.8, 6.1–6.4, 8.1–8.5; BR-1–8, BR-10 | `tests/commands.test.ts`, `tests/step.test.ts`, `tests/purity.test.ts` | — | See T-4 notes |
 | 2026-10-04 | T-5 | `feature/T-5-combat` | AC-4.1–4.4, 4.6, 4.7, 5.4 | `tests/combat.test.ts` | — | See T-5 notes |
+| 2026-10-04 | T-6 | `feature/T-6-boot-title-map` | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | `tests/palette.test.ts` + manual checklist | — | See T-6 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -43,3 +44,17 @@
 - Towers stay "ready" (cooldown 0) while no enemy is in range, so they fire as soon as one enters.
 - Projectiles home in on the target's current position. When the target is gone: arrows vanish (AC-4.6), cannonballs finish their flight to the last seen position and splash there (AC-4.7).
 - The `damage()` guard (`hp <= 0` → ignore) makes sure a reward is credited only once, even when an enemy is hit by a splash and an arrow in the same step.
+
+## T-6 notes
+- **Scenes:** `BootScene` (loading bar, then start `Game` and launch `Title` on top) → `GameScene` (map, camera fitted from `computeLayout` and re-fitted on resize) → `TitleScene` (dimmed overlay: title, goal line, Start button 200×60, Kenney credit; rebuilt on resize). Starting emits `title:start`, which T-8 and T-9 hook into.
+- **Depth:** ground tiles at −1,000,000 + y; scenery tiles (trees, rocks, crystals) sort at their world y with other objects; spot markers sit above the ground and below objects. The flag and spot markers are tweened Graphics.
+- **Load-error bug found and fixed:** a missing atlas PNG fails at Phaser's *processing* step, so `loaderror` never fires. That left the loading bar on screen forever. `create()` now also checks that every atlas texture exists.
+- **Phaser banner:** it prints "Web Audio" even with `noAudio: true`. Its banner logic checks device support first, but `SoundManagerCreator` checks `noAudio` first, so no Phaser AudioContext is created. This is noted so the banner doesn't mislead anyone.
+- **Dev-only handle:** `window.__game` exists in `import.meta.env.DEV` only, for manual checks.
+- **Manual checklist (desktop Chrome, 1459×812 and 360×640 via a resized container):**
+  - Loading bar shows, then the title: pass.
+  - Renaming `towers_red_sheet.png` shows "Couldn't load the game — please refresh" and no Start button: pass.
+  - The whole map is visible, centred and correctly sorted at 360×640 (letterboxed): pass.
+  - Resize re-fits the camera and rebuilds the title without reloading: pass.
+  - Real rotation on the iPhone is checked in T-12.
+- **Screenshot:** ![T-6 title](img/T-6-title.jpg)
