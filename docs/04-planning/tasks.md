@@ -30,7 +30,7 @@
 | T-5 | Simulation combat: targeting, arrows, cannon splash, rewards | AC-4.1–4.4, 4.6, 4.7, 5.4 | T-4 | M | Claude | done (awaiting review) |
 | T-6 | Boot + Title scenes, map rendering | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | T-2, T-3 | M | Claude | done (awaiting review) |
 | T-7 | GameScene loop + entity rendering (enemies, towers, projectiles, effects) | AC-4.1, 4.2 (visuals), 5.2 (Grunt, Runner), 5.3, 5.4 (effect), 10.5 (dt cap) | T-5, T-6 | L | Claude | done (awaiting review) |
-| T-8 | UIScene: HUD, picker, wave button and banners, result overlay, restart, input ownership | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | T-7 | L | Claude | todo |
+| T-8 | UIScene: HUD, picker, wave button and banners, result overlay, restart, input ownership | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | T-7 | L | Claude | done (awaiting review) |
 | T-9 | Audio core + sound effects (unlock, silent fallback, gain graph, iOS resume, pre-rendered ZzFX) | AC-1.6, 3.2 (sound), 4.5, 5.4 (sound), 5.6 (sound), 6.5 (sound), 9.1, 9.2, 9.4, 10.5 (audio) | T-8 | M | Claude | todo |
 | T-10 | Music loop + victory and defeat jingles | AC-9.3, 8.3 (music/jingle), 8.4 (music restart) | T-9 | S | Claude | todo |
 | T-11 | Balance test (two strategies) + BR-10 retune | AC-6.4, AC-6.6; NFR-1 (peak count) | T-5 | M | Claude | todo |

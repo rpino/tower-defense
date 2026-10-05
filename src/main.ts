@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { BootScene } from './scenes/BootScene';
 import { GameScene } from './scenes/GameScene';
 import { TitleScene } from './scenes/TitleScene';
+import { UIScene } from './scenes/UIScene';
 import { COLORS, hex } from './render/palette';
 
 // AC-10.4: block iOS pinch-zoom (Safari ignores user-scalable=no).
@@ -19,7 +20,7 @@ const game = new Phaser.Game({
   // ADR-003: we run our own AudioContext, so Phaser must not create one.
   audio: { noAudio: true },
   // Scenes later in the list draw on top and receive input first.
-  scene: [BootScene, GameScene, TitleScene],
+  scene: [BootScene, GameScene, UIScene, TitleScene],
 });
 
 // Dev-only handle for manual checks in the browser console.

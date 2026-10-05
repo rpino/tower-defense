@@ -28,8 +28,8 @@ export class GameScene extends Phaser.Scene {
   state: GameState | null = null;
   private entities!: EntityView;
   private acc = 0;
-  /** Set by UIScene when it consumed the current pointerup (design §3.5). */
-  uiConsumedPointer = false;
+  /** performance.now() when the current run began; earlier presses (Start/Restart) are ignored. */
+  private runStartedAt = 0;
 
   constructor() {
     super('Game');
@@ -47,12 +47,12 @@ export class GameScene extends Phaser.Scene {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.applyLayout, this);
     });
     this.game.events.on('title:start', () => this.startRun());
-    if (import.meta.env.DEV) this.devKeys();
   }
 
   /** AC-1.3 / AC-8.4: a fresh run (also used by Restart). */
   startRun(): void {
     this.state = createRun();
+    this.runStartedAt = performance.now();
     this.acc = 0;
     this.entities.clear();
     for (const m of this.mapView.spotMarkers.values()) m.setVisible(true);
@@ -90,11 +90,12 @@ export class GameScene extends Phaser.Scene {
 
   /** Map taps: nearest empty build spot within the tap radius, or null (AC-3.1, 3.6, 10.2). */
   private onPointerUp(pointer: Phaser.Input.Pointer): void {
-    if (this.uiConsumedPointer) {
-      this.uiConsumedPointer = false;
-      return;
-    }
+    // Design §3.5: taps on the HUD, picker or result screen belong to UIScene.
+    const ui = this.scene.get('UI') as { isOverUi?: (x: number, y: number) => boolean } | null;
+    if (this.scene.isActive('UI') && ui?.isOverUi?.(pointer.x, pointer.y)) return;
     if (!this.state || this.state.phase === 'victory' || this.state.phase === 'defeat') return;
+    // The press that hit Start/Restart must not also act on the map underneath.
+    if (pointer.downTime < this.runStartedAt) return;
     const pt = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
     const spot = nearestSpot(pt, SPOTS, this.layout.spotTapRadiusWorld);
     const free = spot && !this.state.towers.some((t) => t.spotId === spot.id) ? spot : null;
@@ -108,16 +109,5 @@ export class GameScene extends Phaser.Scene {
     cam.setSize(width, height);
     cam.setZoom(this.layout.zoom);
     cam.centerOn(this.layout.cameraCenter.x, this.layout.cameraCenter.y);
-  }
-
-  /** Temporary dev shortcuts until the UI exists (removed in T-8): A/C build on the last tapped spot, W starts a wave. */
-  private devKeys(): void {
-    let lastSpot: string | null = null;
-    this.game.events.on(EV.spotTap, (id: string | null) => (lastSpot = id));
-    const kb = this.input.keyboard;
-    kb?.on('keydown-S', () => this.startRun());
-    kb?.on('keydown-A', () => lastSpot && this.command({ type: 'build', spotId: lastSpot, tower: 'archer' }));
-    kb?.on('keydown-C', () => lastSpot && this.command({ type: 'build', spotId: lastSpot, tower: 'cannon' }));
-    kb?.on('keydown-W', () => this.command({ type: 'startWave' }));
   }
 }

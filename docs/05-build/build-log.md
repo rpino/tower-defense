@@ -9,6 +9,7 @@
 | 2026-10-04 | T-5 | `feature/T-5-combat` | AC-4.1–4.4, 4.6, 4.7, 5.4 | `tests/combat.test.ts` | — | See T-5 notes |
 | 2026-10-04 | T-6 | `feature/T-6-boot-title-map` | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | `tests/palette.test.ts` + manual checklist | — | See T-6 notes |
 | 2026-10-04 | T-7 | `feature/T-7-entities` | AC-4.1, 4.2 (visuals), 5.2, 5.3, 5.4 (effect), 10.5 (dt cap) | `tests/sync.test.ts` + manual check | — | See T-7 notes |
+| 2026-10-04 | T-8 | `feature/T-8-ui` | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | `tests/picker.test.ts`, `tests/hud.test.ts` + M1 playthrough | — | See T-8 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -73,3 +74,28 @@
   - The background tab's requestAnimationFrame was throttled during automation, so frames were stepped through `GameScene.update` for the screenshots. This automation quirk doesn't affect real play.
   - **For T-12/T-14:** the Runner is small at phone zoom (≈ 9 px at 0.33). Consider scaling up enemies on small screens if it's hard to see on the iPhone.
 - **Screenshot:** ![T-7 entities](img/T-7-entities.png)
+
+## T-8 notes
+- `UIScene` (screen space, above `GameScene`):
+  - Top HUD (heart and lives, "Wave N / 3", coin and gold) and bottom bar with "Start wave N" (build phase only).
+  - Tower picker: placed above or below the spot and clamped on screen; options 100×76; dimmed when unaffordable, re-checked every frame; a tap on another spot moves it; a tap outside closes it; it closes on build and when the run ends.
+  - "Wave N" and "Wave N cleared!" banners, and a Victory/Defeat overlay with Restart.
+- `render/hud.ts` holds the pure helpers `placePicker`, `hudText`, `resultText` and `affordable` (tested).
+- **Input ownership:** `GameScene` ignores a pointerup when `UIScene.isOverUi(x, y)` says it is on the bars, the picker or the result overlay. It also ignores any press that began before the current run started, so the tap on Start or Restart never also opens a picker underneath. This replaced the planned "consumed" flag, which depended on Phaser's cross-scene event order.
+- Dev keyboard shortcuts were removed (grep confirms none are left).
+- **Manual M1 playthrough (desktop Chrome, real clicks plus scripted fast-forward of waves):**
+  - Start → HUD shows 10 / Wave 1 / 3 / 100: pass.
+  - Tap a spot → picker above it; pick Cannon → tower built, gold 20: pass.
+  - Tap another spot → picker with both options dimmed; tapping the dimmed Archer does nothing: pass.
+  - Tap empty ground → picker closes: pass.
+  - Start wave 1 → button hidden, kills add gold: pass.
+  - Wave cleared → "Wave 1 cleared!", Wave 2 / 3, "Start wave 2": pass.
+  - Lives reach 0 → Defeat, "Defeated on wave 2", battlefield frozen: pass.
+  - Restart → lives 10, gold 100, wave 1, no towers, no picker, no overlay: pass.
+  - 10 towers, all 3 waves → Victory, "Lives remaining: 10": pass.
+  - 360×640 → HUD, picker and wave button fit; buttons ≥ 44 px: pass.
+- **Observations for later tasks:**
+  - **T-11:** one Cannon alone leaks 8 of 15 Grunts in wave 1. The strongest layout (10 towers, unlimited gold) needed only ~131 s of wave time, under 150 s, so retuning is needed as expected.
+  - **Portrait phones:** the map is width-limited (zoom ≈ 0.33), so it looks small in portrait. Landscape is much bigger. Raised with Pino at the M1 demo.
+  - Fast-forwarding through script leaves overlapping banners and frozen effects in screenshots. That's an artefact of stepping many seconds within one real frame, not normal play.
+- **Screenshots:** ![Victory](img/T-8-victory.jpg) ![Phone picker](img/T-8-phone-picker.png)

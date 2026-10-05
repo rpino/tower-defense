@@ -43,7 +43,8 @@ export class TitleScene extends Phaser.Scene {
   }
 
   private start(): void {
-    // T-8 starts the run and the HUD; T-9 unlocks audio in this same pointerup.
+    // T-9 unlocks audio in this same pointerup.
+    if (!this.scene.isActive('UI')) this.scene.launch('UI');
     this.game.events.emit('title:start');
     this.scene.stop();
   }
