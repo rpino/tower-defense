@@ -1,6 +1,8 @@
-# Not needed to build or serve the game
-assets/
-docs/
-.sdlc/
-coverage/
-dist/
+# Not needed to build or serve the game. Leading "/" = project root only
+# (a bare "assets/" would also drop public/assets, the game's art).
+/assets/
+/docs/
+/.sdlc/
+/coverage/
+/dist/
+.env*

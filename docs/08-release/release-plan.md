@@ -53,3 +53,15 @@
 ## Go / No-go
 - Preview deploy: ____ by Pino on ____
 - Production deploy: ____ by Pino on ____
+
+## Release log
+| Time (2026-10-04) | Event |
+|---|---|
+| ~22:50 | `vercel link --project tower-defense` (the folder name isn't a valid project name). The CLI created `.env.local` (OIDC token); it's git-ignored and excluded from uploads. |
+| ~22:52 | `vercel deploy` with Pino's "go preview". **Incident:** it was the project's first deployment, so Vercel assigned it to **production** (https://tower-defense-weld.vercel.app) rather than preview. On top of that, `.vercelignore` contained a bare `assets/`, which also excluded `public/assets/`, so the production site loaded with every atlas returning 404 ("Couldn't load the game"). |
+| ~22:56 | Fix: patterns anchored to the root (`/assets/` …), with a regression test (`tests/vercelignore.test.ts`). New preview `tower-defense-jow2r52qf-…` verified with `vercel curl`: page and all atlases 200, `nosniff` present. |
+| — | **Pending Pino's go:** promote the verified preview to production, which replaces the broken first deploy. |
+
+**Lessons (for the retro):**
+- A project's first `vercel deploy` goes to production. Create the project first, or treat the first deploy as production.
+- `.vercelignore` follows `.gitignore` rules, so unanchored names match at any depth.
