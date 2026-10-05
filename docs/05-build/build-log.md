@@ -10,6 +10,7 @@
 | 2026-10-04 | T-6 | `feature/T-6-boot-title-map` | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | `tests/palette.test.ts` + manual checklist | — | See T-6 notes |
 | 2026-10-04 | T-7 | `feature/T-7-entities` | AC-4.1, 4.2 (visuals), 5.2, 5.3, 5.4 (effect), 10.5 (dt cap) | `tests/sync.test.ts` + manual check | — | See T-7 notes |
 | 2026-10-04 | T-8 | `feature/T-8-ui` | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | `tests/picker.test.ts`, `tests/hud.test.ts` + M1 playthrough | — | See T-8 notes |
+| 2026-10-04 | T-9 | `feature/T-9-audio` | AC-1.6, 3.2 (sound), 4.5, 5.4 (sound), 5.6 (sound), 6.5 (sound), 9.1, 9.2, 9.4, 9.6, 10.5 (audio) | `tests/audio.test.ts` | — | See T-9 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -103,3 +104,19 @@
 ## M1 demo decisions (Pino, 2026-10-04)
 - Game title stays "Tower Defense".
 - Portrait phones: leave as is (map width-limited, letterboxed); no rotate hint.
+
+## T-9 notes
+- **ZzFX port:** `src/audio/zzfxSynth.ts` ports ZzFX v1.4.0 `buildSamples` (MIT, licence header kept) and takes the sample rate as a parameter. The `zzfx` npm package was **removed**: importing it runs `new AudioContext` at load (see the T-1 finding).
+- **Engine** (`src/audio/audio.ts`, singleton in `instance.ts`):
+  - Graph: sources → sfx/music bus → master (mute) → speakers.
+  - `unlock()` creates one context, sets `navigator.audioSession.type='playback'` where available (iOS 17+ ringer switch) and pre-renders every preset to an `AudioBuffer`. If anything throws, it goes `silent` (AC-1.6).
+  - Playback adds ±5 % rate variety. At most 4 copies of one sound play at once (AC-9.6 was implemented here early, since it's a few lines; T-13 keeps only the mute toggle).
+- **Wiring** (`src/audio/wire.ts`):
+  - Native `pointerup`/`touchend` listeners on `document` call `unlock()`, which creates the context on the first tap and resumes it on every later tap. These native handlers count as user gestures on iOS no matter how Phaser schedules its own input.
+  - Phaser `hidden`/`visible` suspend and resume the context.
+  - `sim:event` events play their mapped sound.
+- **Sounds (AC-9.2):** build, arrow, cannon, explode, death, lifeLost, waveStart. Victory and defeat jingles come in T-10.
+- **Manual check (Chrome):**
+  - No AudioContext before the first tap: pass.
+  - After Start: context `running`, 48 kHz, 7 buffers prepared, a build plays a voice: pass.
+  - Listening by ear is left to Pino at the M2 demo.
