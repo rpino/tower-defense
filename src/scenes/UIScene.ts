@@ -32,6 +32,7 @@ export class UIScene extends Phaser.Scene {
   private picker: PickerView | null = null;
   private overlay: Phaser.GameObjects.Container | null = null;
   private lastHud = '';
+  private heartIcon: Phaser.GameObjects.Graphics | null = null;
   private fps: Phaser.GameObjects.Text | null = null;
 
   constructor() {
@@ -100,7 +101,7 @@ export class UIScene extends Phaser.Scene {
     top.fillStyle(COLORS.panelEdge, 0.9).fillRect(0, L.topBar.h - 3, L.viewW, 3);
     const cy = L.topBar.h / 2;
     const inset = Math.min(70, L.viewW * 0.12);
-    this.heart(inset - 26, cy);
+    this.heartIcon = this.heart(inset - 26, cy);
     this.coin(L.viewW - inset - 26, cy);
     this.hud = {
       lives: text(this, inset + 4, cy, '', 22, COLORS.lives),
@@ -156,10 +157,21 @@ export class UIScene extends Phaser.Scene {
     });
   }
 
-  private heart(x: number, y: number): void {
+  private heart(x: number, y: number): Phaser.GameObjects.Graphics {
     const g = this.add.graphics({ x, y });
     g.fillStyle(0xe25555, 1);
     g.fillCircle(-5, -3, 6).fillCircle(5, -3, 6).fillTriangle(-11, -1, 11, -1, 0, 11);
+    return g;
+  }
+
+  /** AC-5.7: the lives counter flashes when an enemy gets through. */
+  private flashLives(): void {
+    const targets = [this.hud.lives, this.heartIcon].filter((t) => t !== null);
+    this.tweens.killTweensOf(targets);
+    for (const t of targets) t.setScale(1);
+    this.tweens.add({ targets, scale: 1.45, duration: 110, yoyo: true, repeat: 1, ease: 'Quad.easeOut' });
+    this.hud.lives.setColor('#ffffff');
+    this.time.delayedCall(450, () => this.hud.lives.setColor(hex(COLORS.lives)));
   }
 
   private coin(x: number, y: number): void {
@@ -206,6 +218,7 @@ export class UIScene extends Phaser.Scene {
     });
 
     this.picker = { spotId, container, options, rect: { x: pos.x, y: pos.y, w: PICKER_SIZE.w, h: PICKER_SIZE.h } };
+    this.game.events.emit(EV.pickerOpen, spotId);
     this.paintPicker(this.picker);
     container.setScale(0.85).setAlpha(0);
     this.tweens.add({ targets: container, scale: 1, alpha: 1, duration: 120, ease: 'Quad.easeOut' });
@@ -232,6 +245,7 @@ export class UIScene extends Phaser.Scene {
   }
 
   private closePicker(): void {
+    if (this.picker) this.game.events.emit(EV.pickerClose);
     this.picker?.container.destroy();
     this.picker = null;
   }
@@ -239,7 +253,8 @@ export class UIScene extends Phaser.Scene {
   // ---------------------------------------------------------------- events, banners, results
 
   private onSim(ev: SimEvent): void {
-    if (ev.type === 'waveStart') this.banner(`Wave ${ev.wave}`, COLORS.text); // AC-6.5
+    if (ev.type === 'lifeLost') this.flashLives();
+    else if (ev.type === 'waveStart') this.banner(`Wave ${ev.wave}`, COLORS.text); // AC-6.5
     else if (ev.type === 'waveCleared') this.banner(`Wave ${ev.wave} cleared!`, COLORS.gold); // AC-6.3
     else if (ev.type === 'victory' || ev.type === 'defeat') {
       this.closePicker(); // AC-3.8

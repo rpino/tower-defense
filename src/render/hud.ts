@@ -38,3 +38,6 @@ export function muteButtonRect(L: Layout): { x: number; y: number; w: number; h:
   const size = 48;
   return { x: L.viewW - 8 - size, y: L.bottomBar.y + (L.bottomBar.h - size) / 2, w: size, h: size };
 }
+
+/** AC-5.5: floating text for a kill reward. */
+export const rewardLabel = (reward: number): string => `+${reward}`;

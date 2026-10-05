@@ -1,13 +1,15 @@
 import Phaser from 'phaser';
 import type { TowerType } from '../config/balance';
 import { SPOTS } from '../config/map';
+import { TOWERS } from '../config/balance';
+import { drawRangeCircles } from '../render/effects';
 import { createEnemyTextures } from '../render/enemies';
 import { EntityView } from '../render/entities';
 import { computeLayout, type Layout } from '../render/layout';
 import { drawMap, type MapView } from '../render/mapView';
 import { accumulate } from '../render/sync';
 import { build, startWave } from '../sim/commands';
-import { nearestSpot } from '../sim/iso';
+import { gridToWorld, nearestSpot } from '../sim/iso';
 import { createRun, type GameState, type SimEvent } from '../sim/state';
 import { STEP_DT, step } from '../sim/step';
 
@@ -16,6 +18,8 @@ export const EV = {
   sim: 'sim:event',
   spotTap: 'spot:tap',
   runStarted: 'run:started',
+  pickerOpen: 'picker:open',
+  pickerClose: 'picker:close',
 } as const;
 
 /**
@@ -28,6 +32,7 @@ export class GameScene extends Phaser.Scene {
   state: GameState | null = null;
   private entities!: EntityView;
   private acc = 0;
+  private rangeCircles!: Phaser.GameObjects.Graphics;
   /** performance.now() when the current run began; earlier presses (Start/Restart) are ignored. */
   private runStartedAt = 0;
 
@@ -47,6 +52,16 @@ export class GameScene extends Phaser.Scene {
       this.scale.off(Phaser.Scale.Events.RESIZE, this.applyLayout, this);
     });
     this.game.events.on('title:start', () => this.startRun());
+    // AC-3.10: show both tower ranges while the picker is open.
+    this.rangeCircles = this.add.graphics().setDepth(-400_000).setVisible(false);
+    this.game.events.on(EV.pickerOpen, (spotId: string) => {
+      const spot = SPOTS.find((s) => s.id === spotId);
+      if (!spot) return;
+      const w = gridToWorld(spot.c, spot.r);
+      drawRangeCircles(this.rangeCircles, { archer: TOWERS.archer.range, cannon: TOWERS.cannon.range }, this.cameras.main.zoom);
+      this.rangeCircles.setPosition(w.x, w.y).setVisible(true);
+    });
+    this.game.events.on(EV.pickerClose, () => this.rangeCircles.setVisible(false));
   }
 
   /** AC-1.3 / AC-8.4: a fresh run (also used by Restart). */

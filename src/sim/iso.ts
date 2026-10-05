@@ -41,3 +41,11 @@ export function nearestSpot<S extends { c: number; r: number }>(
   }
   return best;
 }
+
+/**
+ * A circle of `radiusTiles` on the ground grid, as a screen-aligned ellipse in
+ * world px (used for range circles and the splash ring).
+ */
+export function groundEllipse(radiusTiles: number): { rx: number; ry: number } {
+  return { rx: radiusTiles * TILE_HALF_W * Math.SQRT2, ry: radiusTiles * TILE_HALF_H * Math.SQRT2 };
+}

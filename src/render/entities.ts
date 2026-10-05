@@ -7,7 +7,8 @@ import { gridToWorld } from '../sim/iso';
 import { pathPoint } from '../sim/path';
 import type { GameState, Projectile, SimEvent } from '../sim/state';
 import { ENEMY_LOOKS } from './enemies';
-import { deathPuff, explosion } from './effects';
+import { deathPuff, explosion, floatingText } from './effects';
+import { rewardLabel } from './hud';
 import { diffEntities, projectileHeight } from './sync';
 
 const SPOT_POS = new Map(SPOTS.map((s) => [s.id, gridToWorld(s.c, s.r)]));
@@ -50,6 +51,7 @@ export class EntityView {
     if (ev.type === 'death') {
       const w = gridToWorld(ev.c, ev.r);
       deathPuff(this.scene, w.x, w.y, DEATH_COLORS[ev.enemyType]);
+      floatingText(this.scene, w.x, w.y, rewardLabel(ev.reward));
     } else if (ev.type === 'explode') {
       const w = gridToWorld(ev.c, ev.r);
       explosion(this.scene, w.x, w.y, ev.radius);

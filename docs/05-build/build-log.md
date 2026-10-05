@@ -15,6 +15,7 @@
 | 2026-10-04 | T-11 | `feature/T-11-balance` | AC-6.4, AC-6.6; NFR-1 (peak count) | `tests/balance.test.ts`, `tests/autoplay.ts` | — | See T-11 notes |
 | 2026-10-04 | T-12 | `feature/T-12-device-pass` | NFR-1, 3, 7, 8; AC-2.2, 10.1–10.5 (real devices) | `tests/debug.test.ts` + device checklist | Pino (playtest) | Passed: "all looked good" |
 | 2026-10-04 | T-13 | `feature/T-13-mute` | AC-9.5 (AC-5.2 Brute and AC-9.6 done earlier in T-7/T-9) | `tests/mute.test.ts` | — | See T-13 notes |
+| 2026-10-04 | T-14 | `feature/T-14-polish` | AC-3.10, AC-5.5, AC-5.7 | `tests/polish.test.ts` | — | See T-14 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -209,3 +210,13 @@
   - Clicking the button sets `muted = true` and master gain 0, and shows the red slash: pass.
   - The tap didn't open a picker underneath: pass.
 - **Automation note:** the first click after a fresh navigation sometimes doesn't register in the automation tab, and the tab sometimes stops repainting until a frame is forced through `game.step`. Both are browser-automation quirks; Pino's real-device pass had no such issue.
+
+## T-14 notes
+- **Range circles (AC-3.10):** while the picker is open, `GameScene` draws the Archer range as a solid white ellipse and the Cannon range as a dashed orange one around the spot. `UIScene` emits `picker:open`/`picker:close`. `groundEllipse(R)` in `sim/iso.ts` (R·66√2 × R·33√2, tested so that grid points R tiles away land on the edge) is also now used by the explosion ring.
+- **Floating gold (AC-5.5):** "+N" in gold with a dark stroke rises and fades over 1 s from each kill. Its size is divided by camera zoom so it stays about 24 CSS px on any screen. This was raised from 18 px after a screenshot showed it was too small.
+- **Lives flash (AC-5.7):** on `lifeLost` the heart and lives counter pulse (scale 1.45, twice) and the number turns white for 0.45 s.
+- **Manual check (Chrome):**
+  - Range circles shown around spot s5, solid vs dashed: pass.
+  - "+7" floats from an injected Runner death: pass.
+  - Lives counter and heart flash on an injected leak: pass.
+- The browser automation again showed stale frames until frames were forced. Effects were checked by inspecting objects and forcing frames.
