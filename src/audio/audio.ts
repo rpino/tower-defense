@@ -93,6 +93,9 @@ export class AudioEngine {
     const ctx = this.ctx;
     const buf = this.buffers.get(key);
     if (!ctx || !buf || !this.sfxBus || this.silent) return;
+    // Review R-01: while suspended/interrupted, sources would queue up, fill the
+    // voice cap and burst out on resume, so skip them instead.
+    if (ctx.state !== 'running') return;
     const playing = this.voices.get(key) ?? 0;
     if (playing >= MAX_VOICES) return; // AC-9.6
     const src = ctx.createBufferSource();

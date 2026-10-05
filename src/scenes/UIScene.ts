@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { TOWERS, type TowerType } from '../config/balance';
 import { SPOTS, TOWER_FRAMES } from '../config/map';
 import { audio } from '../audio/instance';
-import { PICKER_SIZE, affordable, hudText, muteButtonRect, placePicker, resultText } from '../render/hud';
+import { PICKER_SIZE, affordable, hudText, muteButtonRect, pickerOptionRect, placePicker, resultText } from '../render/hud';
 import { isDebug } from '../render/debug';
 import { useCssCamera } from '../render/dpr';
 import { worldToScreen, type Rect } from '../render/layout';
@@ -203,17 +203,16 @@ export class UIScene extends Phaser.Scene {
 
     const options = {} as PickerView['options'];
     (['archer', 'cannon'] as TowerType[]).forEach((type, i) => {
-      const ox = 8 + i * (PICKER_SIZE.optionW + 0) + (i ? 0 : 0);
-      const oy = (PICKER_SIZE.h - PICKER_SIZE.optionH) / 2;
+      const r = pickerOptionRect(i);
       const bg = this.add.graphics();
       const look = TOWER_FRAMES[type];
       const icon = this.add
-        .image(ox + 26, oy + PICKER_SIZE.optionH / 2 + 18, look.atlas, look.pieces[look.pieces.length - 1])
+        .image(r.x + 24, r.y + r.h / 2 + 18, look.atlas, look.pieces[look.pieces.length - 1])
         .setOrigin(0.5, 1)
         .setScale(0.42);
-      const name = text(this, ox + 68, oy + 24, TOWER_NAMES[type], 16, COLORS.text);
-      const cost = text(this, ox + 68, oy + 50, String(TOWERS[type].cost), 18, COLORS.gold);
-      const hit = this.add.zone(ox, oy, PICKER_SIZE.optionW, PICKER_SIZE.optionH).setOrigin(0).setInteractive({ useHandCursor: true });
+      const name = text(this, r.x + 66, r.y + 24, TOWER_NAMES[type], 16, COLORS.text);
+      const cost = text(this, r.x + 66, r.y + 50, String(TOWERS[type].cost), 18, COLORS.gold);
+      const hit = this.add.zone(r.x, r.y, r.w, r.h).setOrigin(0).setInteractive({ useHandCursor: true });
       hit.on('pointerup', () => this.pick(type));
       container.add([bg, icon, name, cost, hit]);
       options[type] = { bg, parts: [icon, name, cost] };
@@ -231,10 +230,9 @@ export class UIScene extends Phaser.Scene {
     const can = affordable(this.gs.state?.gold ?? 0);
     (['archer', 'cannon'] as TowerType[]).forEach((type, i) => {
       const o = p.options[type];
-      const ox = 8 + i * PICKER_SIZE.optionW;
-      const oy = (PICKER_SIZE.h - PICKER_SIZE.optionH) / 2;
+      const r = pickerOptionRect(i);
       o.bg.clear();
-      o.bg.fillStyle(can[type] ? COLORS.button : COLORS.buttonDisabled, 1).fillRoundedRect(ox + 2, oy, PICKER_SIZE.optionW - 4, PICKER_SIZE.optionH, 10);
+      o.bg.fillStyle(can[type] ? COLORS.button : COLORS.buttonDisabled, 1).fillRoundedRect(r.x, r.y, r.w, r.h, 10);
       for (const part of o.parts) (part as unknown as Phaser.GameObjects.Components.Alpha).setAlpha(can[type] ? 1 : 0.45);
     });
   }

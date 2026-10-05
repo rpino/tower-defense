@@ -161,3 +161,16 @@ describe('T-9 audio engine', () => {
     expect(ctx.resume).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Review R-01: no sounds while the context is not running', () => {
+  it('play() skips while suspended or interrupted, so the voice cap cannot fill up', () => {
+    const { ctx, engine } = make();
+    engine.unlock();
+    ctx.state = 'interrupted';
+    for (let i = 0; i < MAX_VOICES + 2; i++) engine.play('arrow');
+    expect(ctx.sources.filter((s) => s.started)).toHaveLength(0);
+    ctx.state = 'running';
+    engine.play('arrow');
+    expect(ctx.sources.filter((s) => s.started)).toHaveLength(1);
+  });
+});

@@ -41,3 +41,13 @@ export function muteButtonRect(L: Layout): { x: number; y: number; w: number; h:
 
 /** AC-5.5: floating text for a kill reward. */
 export const rewardLabel = (reward: number): string => `+${reward}`;
+
+/** Review R-03: rectangle of picker option `i` (0 = Archer, 1 = Cannon), relative to the picker. */
+export function pickerOptionRect(i: number): { x: number; y: number; w: number; h: number } {
+  return {
+    x: 8 + i * PICKER_SIZE.optionW + 2,
+    y: (PICKER_SIZE.h - PICKER_SIZE.optionH) / 2,
+    w: PICKER_SIZE.optionW - 4,
+    h: PICKER_SIZE.optionH,
+  };
+}

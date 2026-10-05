@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PICKER_SIZE, placePicker } from '../src/render/hud';
+import { PICKER_SIZE, pickerOptionRect, placePicker } from '../src/render/hud';
 import { computeLayout } from '../src/render/layout';
 
 const L = computeLayout(360, 640);
@@ -29,5 +29,21 @@ describe('T-8 picker placement (AC-3.1)', () => {
   it('AC-10.2: picker option buttons are at least 44×44 CSS px', () => {
     expect(PICKER_SIZE.optionW).toBeGreaterThanOrEqual(44);
     expect(PICKER_SIZE.optionH).toBeGreaterThanOrEqual(44);
+  });
+});
+
+describe('Review R-03: one source of truth for picker option geometry', () => {
+  it('both options sit inside the picker, side by side without overlapping, each ≥ 44×44', () => {
+    const a = pickerOptionRect(0);
+    const b = pickerOptionRect(1);
+    for (const r of [a, b]) {
+      expect(r.x).toBeGreaterThanOrEqual(0);
+      expect(r.y).toBeGreaterThanOrEqual(0);
+      expect(r.x + r.w).toBeLessThanOrEqual(PICKER_SIZE.w);
+      expect(r.y + r.h).toBeLessThanOrEqual(PICKER_SIZE.h);
+      expect(r.w).toBeGreaterThanOrEqual(44);
+      expect(r.h).toBeGreaterThanOrEqual(44);
+    }
+    expect(a.x + a.w).toBeLessThanOrEqual(b.x);
   });
 });
