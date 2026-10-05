@@ -27,7 +27,7 @@
 | T-2 | Atlas spike + map data (`map.ts`, tower frames) — time-box 45 min | AC-2.1, AC-2.3, AC-10.2 (spacing), DES-1 | T-1 | M | Claude + Pino | done (awaiting review) |
 | T-3 | Isometric math + layout (`iso.ts`, `layout.ts`) | AC-2.2, AC-10.2, AC-10.3 | T-1 | S | Claude | done (awaiting review) |
 | T-4 | Simulation core: run, economy, spawning, movement, waves, win/lose | AC-1.3, 3.2, 3.3, 3.6, 3.7, 3.9, 5.1, 5.6, 5.8, 6.1–6.4, 8.1, 8.2, 8.4, 8.5; BR-1–8, BR-10 | T-2, T-3 | M | Claude | done (awaiting review) |
-| T-5 | Simulation combat: targeting, arrows, cannon splash, rewards | AC-4.1–4.4, 4.6, 4.7, 5.4 | T-4 | M | Claude | todo |
+| T-5 | Simulation combat: targeting, arrows, cannon splash, rewards | AC-4.1–4.4, 4.6, 4.7, 5.4 | T-4 | M | Claude | done (awaiting review) |
 | T-6 | Boot + Title scenes, map rendering | AC-1.1, 1.2, 1.4, 1.5, 2.1–2.5, 10.3 | T-2, T-3 | M | Claude | todo |
 | T-7 | GameScene loop + entity rendering (enemies, towers, projectiles, effects) | AC-4.1, 4.2 (visuals), 5.2 (Grunt, Runner), 5.3, 5.4 (effect), 10.5 (dt cap) | T-5, T-6 | L | Claude | todo |
 | T-8 | UIScene: HUD, picker, wave button and banners, result overlay, restart, input ownership | AC-1.3, 3.1, 3.3–3.5, 3.7, 3.8, 6.1, 6.3, 6.5 (banner), 7.1–7.3, 8.1–8.4, 10.1, 10.2; NFR-7 | T-7 | L | Claude | todo |
