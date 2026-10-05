@@ -45,14 +45,14 @@
 ## Proposed standing rules
 | # | Rule | Source | Decision |
 |---|---|---|---|
-| SR-1 | A Vercel project's **first** `vercel deploy` goes to production. Treat it as a production deploy (it needs the production go/no-go), or create the project and deploy a throwaway first. | RCA-2026-01 F-2 | Proposed |
-| SR-2 | Anchor ignore-file patterns to the root (`/dir/`) unless matching at any depth is intended, and keep a test asserting that `public/` ships (`tests/vercelignore.test.ts`). | RCA-2026-01 F-3 | Proposed |
-| SR-3 | Before saying a deploy is done, fetch the page **and every asset URL** on the deployed URL (`vercel curl` for protected previews) and require all 200s. | RCA-2026-01 | Proposed |
-| SR-4 | Every new test must be able to fail. Never assert a function's result against the same call (`f(x) === f(x)`). | QA DEF-03 | Proposed |
-| SR-5 | Never import an audio library that creates an `AudioContext` at module load. Create the context only inside a native `pointerup`/`touchend` handler (iOS). | T-1/T-9 finding | Proposed |
-| SR-6 | Any change to `src/config/balance.ts` must keep `tests/balance.test.ts` green (every scripted winning player takes 150–240 s). | T-11 | Proposed |
-| SR-7 | After git operations that remove or re-create `public/` (branch switches, fast-forwards from an older `main`), restart the dev server before any browser check. | Review re-check | Proposed |
-| SR-8 | For jam-size projects: keep each phase document to about one page, and merge Design and Planning into a single "design + task list" document with one approval. | Pino's retro feedback | Proposed |
+| SR-1 | A Vercel project's **first** `vercel deploy` goes to production. Treat it as a production deploy (it needs the production go/no-go), or create the project and deploy a throwaway first. | RCA-2026-01 F-2 | **Adopted** (Pino, 2026-10-04) |
+| SR-2 | Anchor ignore-file patterns to the root (`/dir/`) unless matching at any depth is intended, and keep a test asserting that `public/` ships (`tests/vercelignore.test.ts`). | RCA-2026-01 F-3 | **Adopted** (Pino, 2026-10-04) |
+| SR-3 | Before saying a deploy is done, fetch the page **and every asset URL** on the deployed URL (`vercel curl` for protected previews) and require all 200s. | RCA-2026-01 | **Adopted** (Pino, 2026-10-04) |
+| SR-4 | Every new test must be able to fail. Never assert a function's result against the same call (`f(x) === f(x)`). | QA DEF-03 | **Adopted** (Pino, 2026-10-04) |
+| SR-5 | Never import an audio library that creates an `AudioContext` at module load. Create the context only inside a native `pointerup`/`touchend` handler (iOS). | T-1/T-9 finding | **Adopted** (Pino, 2026-10-04) |
+| SR-6 | Any change to `src/config/balance.ts` must keep `tests/balance.test.ts` green (every scripted winning player takes 150–240 s). | T-11 | **Adopted** (Pino, 2026-10-04) |
+| SR-7 | After git operations that remove or re-create `public/` (branch switches, fast-forwards from an older `main`), restart the dev server before any browser check. | Review re-check | **Adopted** (Pino, 2026-10-04) |
+| SR-8 | For jam-size projects: keep each phase document to about one page, and merge Design and Planning into a single "design + task list" document with one approval. | Pino's retro feedback | **Adopted** (Pino, 2026-10-04) |
 
 ## Action items
 | Action | Owner | Due |

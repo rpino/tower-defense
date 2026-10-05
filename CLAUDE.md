@@ -18,3 +18,11 @@ This project follows the **Agentic SDLC** process (sdlc-core plugin).
 
 ## Standing rules learned on this project
 <!-- sdlc-knowledge:knowledge-updater appends lessons here after each retro -->
+- Treat a Vercel project's first `vercel deploy` as a production deploy (it needs the production go/no-go). (RCA-2026-01, SR-1)
+- Anchor deploy/ignore-file patterns to the root (`/dir/`) unless any-depth matching is intended; keep `tests/vercelignore.test.ts` proving `public/` ships. (RCA-2026-01, SR-2)
+- A deploy is done only when the page and every asset URL return 200 on the deployed URL (`vercel curl` for protected previews). (RCA-2026-01, SR-3)
+- Every new test must be able to fail; never assert a call's result against the same call. (QA DEF-03, SR-4)
+- Never import an audio library that creates an `AudioContext` at module load; create the context only inside a native `pointerup`/`touchend` handler. (T-1/T-9, SR-5)
+- Any change to `src/config/balance.ts` must keep `tests/balance.test.ts` green (every scripted winning player takes 150–240 s). (T-11, SR-6)
+- After git operations that remove or re-create `public/` (branch switches, fast-forwards), restart the dev server before any browser check. (Review re-check, SR-7)
+- Jam-size projects: keep each phase document to about one page, and merge Design and Planning into one "design + task list" document with one approval. (Retro, SR-8)
