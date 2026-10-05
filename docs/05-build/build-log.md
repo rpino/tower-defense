@@ -5,6 +5,7 @@
 | 2026-10-04 | T-1 | `feature/T-1-scaffold` (no remote; no PR) | NFR-4, NFR-5, AC-10.4 (page CSS) | `tests/smoke.test.ts` | — | See T-1 notes |
 | 2026-10-04 | T-2 | `feature/T-2-map` | AC-2.1, AC-2.3, AC-10.2 (spacing), DES-1 | `tests/map.test.ts` | — | See T-2 notes |
 | 2026-10-04 | T-3 | `feature/T-3-iso-layout` | AC-2.2, AC-10.2, AC-10.3 (maths) | `tests/iso.test.ts`, `tests/layout.test.ts` | — | See T-3 notes |
+| 2026-10-04 | T-4 | `feature/T-4-sim-core` | AC-1.3, 3.2, 3.3, 3.6–3.9, 5.1, 5.6, 5.8, 6.1–6.4, 8.1–8.5; BR-1–8, BR-10 | `tests/commands.test.ts`, `tests/step.test.ts`, `tests/purity.test.ts` | — | See T-4 notes |
 
 ## T-1 notes
 - **Stack:** Phaser 3.90.0 (pinned per ADR-001; npm `latest` is now Phaser 4.2.1, which we deliberately don't use), Vite 8.3.2, Vitest 5.0.3, TypeScript 5.9.3, zzfx 1.4.0.
@@ -28,3 +29,9 @@
 - `src/render/layout.ts`: 48 px top HUD band, 64 px bottom band and 8 px padding. The map's world bounds (1056×600) are zoom-fitted into the rest and centred (letterboxed). It also provides `screenToWorld`/`worldToScreen`.
 - **At 360×640:** zoom ≈ 0.326, tap radius 22 CSS px ≈ 67.5 world px. The closest spot pair (132 world px) gives each spot an exclusive radius of ≈ 21.5 CSS px, so DES-1's ≥ 20 px holds (tested).
 - Viewports tested: 360×640, 640×360, 390×844, 1280×720 and 1920×1080.
+
+## T-4 notes
+- `src/config/balance.ts` holds every BR-10 number. The wave tables start from the design §3.6 retune proposal (15 / 26 / 38 enemies; gaps 2.0 / 1.5 / 1.3 s; 2 s pause before the 6 Brutes). T-11 finalises them under RD-5.
+- `src/sim/state.ts` (types, `SimEvent`, `createRun`), `path.ts` (`pathPoint`, 23-tile path), `commands.ts` (`build`, `startWave`), `step.ts` (spawning, movement, leaks, wave end, defeat-before-victory, no-op after the run ends).
+- The state is mutated in place, and commands leave it untouched when they refuse (tested with `structuredClone` before/after).
+- `tests/purity.test.ts` enforces ADR-002: no Phaser or DOM imports under `src/sim` and `src/config`.
