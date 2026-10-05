@@ -55,15 +55,17 @@
 - Production deploy: **GO** by Pino on 2026-10-04 ("go production"). Live at https://tower-defense-weld.vercel.app
 
 ## Release log
-| Time (2026-10-04) | Event |
+| Time (2026-10-04, PDT, from `vercel ls` ages) | Event |
 |---|---|
-| ~22:50 | `vercel link --project tower-defense` (the folder name isn't a valid project name). The CLI created `.env.local` (OIDC token); it's git-ignored and excluded from uploads. |
-| ~22:52 | `vercel deploy` with Pino's "go preview". **Incident:** it was the project's first deployment, so Vercel assigned it to **production** (https://tower-defense-weld.vercel.app) rather than preview. On top of that, `.vercelignore` contained a bare `assets/`, which also excluded `public/assets/`, so the production site loaded with every atlas returning 404 ("Couldn't load the game"). |
-| ~22:56 | Fix: patterns anchored to the root (`/assets/` …), with a regression test (`tests/vercelignore.test.ts`). New preview `tower-defense-jow2r52qf-…` verified with `vercel curl`: page and all atlases 200, `nosniff` present. |
-| ~23:05 | Pino: "go production". `vercel promote tower-defense-jow2r52qf-…` → new production deployment. |
-| ~23:06 | **Production smoke test** (https://tower-defense-weld.vercel.app): page, JS, all 3 atlases (PNG + XML) and the licence file return 200. Headers: `X-Content-Type-Options: nosniff`, plus Vercel's HSTS. `/docs/…`, `/.sdlc/state.json`, `/.env.local` and the raw art pack return 404 (not exposed). One transient 404 on `landscape_sheet.xml` during propagation; stable 200 afterwards (5 of 5, plus a cache-busted check). Chrome: title, map and credit render; Start → HUD (10 / Wave 1 / 3 / 150); the picker opens with range circles; no console errors. ![prod smoke](prod-smoke-picker.jpg) |
+| ~23:00 | `vercel link --project tower-defense` (the folder name isn't a valid project name). The CLI created `.env.local` (OIDC token); it's git-ignored and excluded from uploads. |
+| 23:02 | `vercel deploy` with Pino's "go preview". **Incident:** it was the project's first deployment, so Vercel assigned it to **production** (https://tower-defense-weld.vercel.app) rather than preview. On top of that, `.vercelignore` contained a bare `assets/`, which also excluded `public/assets/`, so the production site loaded with every atlas returning 404 ("Couldn't load the game"). |
+| 23:03 | Fix: patterns anchored to the root (`/assets/` …), with a regression test (`tests/vercelignore.test.ts`). New preview `tower-defense-jow2r52qf-…` verified with `vercel curl`: page and all atlases 200, `nosniff` present. |
+| 23:04 | Pino: "go production". `vercel promote tower-defense-jow2r52qf-…` → new production deployment. |
+| 23:06 | **Production smoke test** (https://tower-defense-weld.vercel.app): page, JS, all 3 atlases (PNG + XML) and the licence file return 200. Headers: `X-Content-Type-Options: nosniff`, plus Vercel's HSTS. `/docs/…`, `/.sdlc/state.json`, `/.env.local` and the raw art pack return 404 (not exposed). One transient 404 on `landscape_sheet.xml` during propagation; stable 200 afterwards (5 of 5, plus a cache-busted check). Chrome: title, map and credit render; Start → HUD (10 / Wave 1 / 3 / 150); the picker opens with range circles; no console errors. ![prod smoke](prod-smoke-picker.jpg) |
 | — | Remaining for Pino: play one full game on production on the iPhone (smoke item 4), then submit the production link to the jam. |
 
 **Lessons (for the retro):**
 - A project's first `vercel deploy` goes to production. Create the project first, or treat the first deploy as production.
 - `.vercelignore` follows `.gitignore` rules, so unanchored names match at any depth.
+
+Full incident write-up: `docs/09-operate/RCA-2026-01.md`.
